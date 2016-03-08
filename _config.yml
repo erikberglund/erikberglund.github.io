@@ -1,6 +1,6 @@
-name: Your New Jekyll Site
+name: erikberglund.github.io
 description: Code and 
-meta_description: "Your New Jekyll Site, Blogging about stuffs"
+meta_description: "Erik Berglund"
 
 aboutPage: true
 
@@ -9,13 +9,13 @@ highlighter: rouge
 
 paginate: 20
 baseurl: /
-domain_name: 'http://yourblog-domain.com'
+domain_name: 'http://erikberglund.github.io'
 google_analytics: 'UA-XXXXXXXX-X'
 disqus: false
 disqus_shortname: 'your-disqus-shortname'
 
 # Details for the RSS feed generator
-url:            'http://erikberglund.github.io.com'
+url:            'http://erikberglund.github.io'
 author:         'Erik Berglund'
 authorTwitter:  'ekkrik'
 
