@@ -1,10 +1,10 @@
 name: Your New Jekyll Site
-description: Blogging about stuffs
+description: Code and 
 meta_description: "Your New Jekyll Site, Blogging about stuffs"
 
 aboutPage: true
 
-markdown: redcarpet
+markdown: kramdown
 highlighter: rouge
 
 paginate: 20
@@ -15,9 +15,9 @@ disqus: false
 disqus_shortname: 'your-disqus-shortname'
 
 # Details for the RSS feed generator
-url:            'http://your-blog-url.example.com'
-author:         'Your Name'
-authorTwitter:  'YourTwitterUsername'
+url:            'http://erikberglund.github.io.com'
+author:         'Erik Berglund'
+authorTwitter:  'ekkrik'
 
 permalink:       /:year/:title/
 
