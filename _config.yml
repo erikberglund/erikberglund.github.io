@@ -1,12 +1,15 @@
 name: erikberglund.github.io
-description: Code and 
+description: Adventures in Code
 meta_description: "Erik Berglund"
 
 aboutPage: true
 
 markdown: kramdown
 highlighter: rouge
+
+# Gems
 gems: [jekyll-paginate]
+
 paginate: 20
 baseurl: /
 domain_name: 'http://erikberglund.github.io'
