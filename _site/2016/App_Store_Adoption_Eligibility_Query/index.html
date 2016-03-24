@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>erikberglund.github.io - App Store Adoption Eligibility Query</title>
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="/rss.xml">
+  <link rel="stylesheet" href="/assets/css/highlight.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    
+        <a href="/"> <span class="arrow">←</span> Home </a>
+    
+
+    
+        
+            <a href="/about">About </a>
+        
+    
+    <a class="cta" href="/feed.xml">Subscribe</a>
+</nav>
+
+  
+
+  <section id="wrapper" class="">
+    <article class="post">
+    <header>
+        <h1>App Store Adoption Eligibility Query</h1>
+        <h2 class="headline">March 23, 2016</h2>
+    </header>
+    <section id="post-body">
+        <p>When you buy a new computer from Apple, the following Mac App Store applications are pre-installed on the system without a tie to a particular Apple ID:</p>
+
+<ul>
+  <li>iMovie</li>
+  <li>GarageBand</li>
+  <li>Pages</li>
+  <li>Numbers</li>
+  <li>Keynote</li>
+</ul>
+
+<p><br />
+To update them, the user has to “adopt” the applications using an Apple ID. (<a href="https://support.apple.com/en-us/HT203658">HT203658</a>)</p>
+
+<p>By doing that, the applications become associated with that Apple ID locally and the computer used to adopt the licenses has it’s free licenses removed from the Apple servers.</p>
+
+<p>This means that the apps can’t be adopted by another Apple ID using the same computer.</p>
+
+<h1 id="adoption-eligibility">Adoption Eligibility</h1>
+
+<p>Each time the Mac App Store application launches, it reaches out to <a href="http://buy.itunes.apple.com">buy.itunes.apple.com</a> which returns the status of the running machine’s app adoption eligibility.</p>
+
+<p>The server response is written to this file:</p>
+
+<pre><code class="language-console">/Library/Application Support/App Store/adoption.plist
+</code></pre>
+
+<p>If all applications have been adopted, the file will contain an error dict with the error key:</p>
+
+<p><strong>MZFinance.AppAdoptionNotEligible</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>eligibilityRead<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;dict&gt;</span>
+        <span class="nt">&lt;key&gt;</span>errorMessage<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;string&gt;</span>ex.name (com.apple.jingle.foundation.exceptions.MZCodedException) -- ex.message (MZException code = MZFinance.AppAdoptionNotEligible, userInfo = null)<span class="nt">&lt;/string&gt;</span>
+        <span class="nt">&lt;key&gt;</span>errorMessageKey<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;string&gt;</span>MZFinance.AppAdoptionNotEligible<span class="nt">&lt;/string&gt;</span>
+        <span class="nt">&lt;key&gt;</span>errorNumber<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;integer&gt;</span>3552<span class="nt">&lt;/integer&gt;</span>
+        <span class="nt">&lt;key&gt;</span>status<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;integer&gt;</span>-1<span class="nt">&lt;/integer&gt;</span>
+        <span class="nt">&lt;key&gt;</span>userPresentableErrorMessage<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;string&gt;</span>Future updates of these apps can be found through Software Update.<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>eligiblityReadDate<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;date&gt;</span>2016-03-23T20:00:00Z<span class="nt">&lt;/date&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span>
+</code></pre>
+</div>
+
+<p>If one or more applications are available for adoption, an array of application bundle ID:s eligble for adoption will be returned instead.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>eligibilityRead<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;dict&gt;</span>
+        <span class="nt">&lt;key&gt;</span>items<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;array&gt;</span>
+            <span class="nt">&lt;dict&gt;</span>
+                <span class="nt">&lt;key&gt;</span>version<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>10.1<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>adamID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>682658836<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>installerVersionID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>811655132<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>bundleID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>com.apple.garageband10<span class="nt">&lt;/string&gt;</span>
+            <span class="nt">&lt;/dict&gt;</span>
+            ...
+        <span class="nt">&lt;/array&gt;</span>
+        <span class="nt">&lt;key&gt;</span>status<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;integer&gt;</span>0<span class="nt">&lt;/integer&gt;</span>
+    <span class="nt">&lt;/dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>eligiblityReadDate<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;date&gt;</span>2016-03-23T20:00:00Z<span class="nt">&lt;/date&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span>
+</code></pre>
+</div>
+
+<p>So, to see the adoption status of a running computer, you only have to look in this file.</p>
+
+<h1 id="deciphering-the-query">Deciphering the query</h1>
+
+<p>I want to check the adoption status from a NetBoot environment where running the Mac App Store to update the adoption.plist file can’t be done.</p>
+
+<p>Therefore we have to recreate the Mac App Store request ourselves.</p>
+
+<p>By enabling xml debug logging for the Mac App Store using the following defaults command:</p>
+
+<pre><code class="language-console">defaults write com.apple.commerce LogXML true
+</code></pre>
+
+<p>We can see that it’s the <code class="highlighter-rouge">storeassetd</code> binary that requests this information, and in fact, log it’s queries in the following location:</p>
+
+<pre><code class="language-console">~/Library/Logs/storeassetd
+</code></pre>
+
+<p>Look for files named <strong><em>date</em> (Request).plist</strong> and inspect their content. We’re looking for requests that have the URL key set to an URL looking like this:</p>
+
+<pre><code class="language-console">https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/adoptionEligibilitySrv?guid=A45E60******
+</code></pre>
+
+<p>In this file, we can see (in the <strong>httpBody</strong> key) that the request data is a plist with four keys:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>guid<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>A45E60******<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>response-content-type<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>text/xml<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>rom-addr<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>0cbc9f******<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>serial-no<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>C0252******GF2C1H<span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+</code></pre>
+</div>
+
+<h3 id="guid">guid</h3>
+
+<p>In this context, the <strong>guid</strong> is the MAC address (without separator and all upper-case) of the first interface (en0). In my testings this value is not required, it can be left empty.</p>
+
+<p>You can use this command to print the first MAC address in the correct format:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ifconfig en0 | awk <span class="s1">'/ether/{ gsub(":",""); print toupper($2)}'</span>
+</code></pre>
+</div>
+
+<p><em>Output:</em></p>
+
+<pre><code class="language-console">A45E60******
+</code></pre>
+
+<h3 id="response-content-type">response-content-type</h3>
+
+<p>This key set the format for the return value, we’ll use the current value of <strong>text/xml</strong></p>
+
+<h3 id="serial-no">serial-no</h3>
+
+<p>The serial-no value is a 17 character string that looks like a longer version of the standard computer serial number. That’s because it’s the <a href="http://www.insanelymac.com/forum/topic/303073-pattern-of-mlb-main-logic-board/#entry2091468">main logic board serial number</a>.</p>
+
+<p>This value is stored in nvram and by knowing it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</strong>) we can use the nvram command to retrieve the serial number:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk <span class="s1">'{ print $NF }'</span>
+</code></pre>
+</div>
+
+<p><em>Output:</em></p>
+
+<pre><code class="language-console">C0252******GF2C1H
+</code></pre>
+
+<h3 id="rom-addr">rom-addr</h3>
+
+<p>The rom-addr is a MAC address for the main logic board that’s used in conjunction with the main logic board serial number to uniquely identify a Mac.</p>
+
+<p>This value is also stored in nvram, and by using it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</strong>) we can retrieve the rom-addr using the <code class="highlighter-rouge">nvram</code> command as well:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>nvram -x 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk <span class="s1">'{ gsub(/\%/, ""); print $NF }'</span>
+</code></pre>
+</div>
+
+<p><em>Output:</em></p>
+
+<pre><code class="language-console">0cbc9f******
+</code></pre>
+
+<h1 id="query-without-the-mac-app-store">Query without the Mac App Store</h1>
+
+<p>Now that we know how to retrieve the required values, we can send a query to the Apple servers for the adoption status of the running system (must be saved as a bash script to run):</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="nv">guid</span><span class="o">=</span><span class="k">$(</span>ifconfig en0 | awk <span class="s1">'/ether/{ gsub(":",""); print toupper($2)}'</span><span class="k">)</span>
+
+<span class="nb">read</span> -r -d <span class="s1">''</span> data_plist <span class="sh">&lt;&lt;-EOF
+	&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+	&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+	&lt;plist version="1.0"&gt;
+	&lt;dict&gt;
+		&lt;key&gt;guid&lt;/key&gt;
+		&lt;string&gt;${guid}&lt;/string&gt;
+		&lt;key&gt;response-content-type&lt;/key&gt;
+		&lt;string&gt;text/xml&lt;/string&gt;
+		&lt;key&gt;rom-addr&lt;/key&gt;
+		&lt;string&gt;$(nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk '{ gsub(/\%/, ""); print $NF }')&lt;/string&gt;
+		&lt;key&gt;serial-no&lt;/key&gt;
+		&lt;string&gt;$(nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk '{ print $NF }')&lt;/string&gt;
+	&lt;/dict&gt;
+	&lt;/plist&gt;
+	EOF
+
+</span>curl -H <span class="s2">"X-Apple-Store-Front: 143441-1,12"</span> --data <span class="s2">"</span><span class="k">${</span><span class="nv">data_plist</span><span class="k">}</span><span class="s2">"</span> https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/adoptionEligibilitySrv?guid<span class="o">=</span><span class="k">${</span><span class="nv">guid</span><span class="k">}</span>
+
+<span class="nb">exit </span>0
+</code></pre>
+</div>
+
+<p>This will return the same property list as the one written to adoption.plist</p>
+
+<h1 id="deciphering-the-response">Deciphering the response</h1>
+
+<p>The response will be in property list format (as defined by the <strong>response-content-type</strong> key) and can either contain error keys or a list of available applications to adopt.</p>
+
+<h3 id="error-response">Error Response</h3>
+<p>If you get an error response, here are some keys that might be returned:</p>
+
+<ul>
+  <li>
+    <p><strong>MZFinance.AppAdoptionNotEligible</strong><br />
+ This means there are no applications to adopt for this computer (or they’re already adopted).</p>
+  </li>
+  <li>
+    <p><strong>MZFinance.NoSerialNos / MZCommerce.SoftwareAdoption.NoSerialNos</strong><br />
+ This is returned if either the <strong>serial-no</strong> or <strong>rom-addr</strong> are incorrect, or if the computer never had any free application licenses to grant the user.</p>
+  </li>
+</ul>
+
+<p><em>Example response when all applications have been adopted:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>errorMessageKey<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>MZFinance.AppAdoptionNotEligible<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>errorNumber<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;integer&gt;</span>3552<span class="nt">&lt;/integer&gt;</span>
+    <span class="nt">&lt;key&gt;</span>status<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;integer&gt;</span>-1<span class="nt">&lt;/integer&gt;</span>
+    <span class="nt">&lt;key&gt;</span>userPresentableErrorMessage<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>Future updates of these apps can be found through Software Update.<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>errorMessage<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>ex.name (com.apple.jingle.foundation.exceptions.MZCodedException) -- ex.message (MZException code = MZFinance.AppAdoptionNotEligible, userInfo = null)<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span>
+</code></pre>
+</div>
+
+<h3 id="adoption-response">Adoption Response:</h3>
+
+<p>If you instead get a list of applications still available for adoption, it will look like this.</p>
+
+<p><em>Example response when multiple applications are available for adoption:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>eligibilityRead<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;dict&gt;</span>
+        <span class="nt">&lt;key&gt;</span>items<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;array&gt;</span>
+            <span class="nt">&lt;dict&gt;</span>
+                <span class="nt">&lt;key&gt;</span>version<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>10.1<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>adamID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>682658836<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>installerVersionID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>811655132<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>bundleID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>com.apple.garageband10<span class="nt">&lt;/string&gt;</span>
+            <span class="nt">&lt;/dict&gt;</span>
+            <span class="nt">&lt;dict&gt;</span>
+                <span class="nt">&lt;key&gt;</span>version<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>10.1.1<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>adamID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>408981434<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>installerVersionID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>815650084<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>bundleID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>com.apple.iMovieApp<span class="nt">&lt;/string&gt;</span>
+            <span class="nt">&lt;/dict&gt;</span>
+            <span class="nt">&lt;dict&gt;</span>
+                <span class="nt">&lt;key&gt;</span>version<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>6.6.1<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>adamID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>409183694<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>installerVersionID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>814208678<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>bundleID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>com.apple.iWork.Keynote<span class="nt">&lt;/string&gt;</span>
+            <span class="nt">&lt;/dict&gt;</span>
+            <span class="nt">&lt;dict&gt;</span>
+                <span class="nt">&lt;key&gt;</span>version<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>3.6.1<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>adamID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>409203825<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>installerVersionID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>814208661<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>bundleID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>com.apple.iWork.Numbers<span class="nt">&lt;/string&gt;</span>
+            <span class="nt">&lt;/dict&gt;</span>
+            <span class="nt">&lt;dict&gt;</span>
+                <span class="nt">&lt;key&gt;</span>version<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>5.6.1<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>adamID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>409201541<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>installerVersionID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>814208633<span class="nt">&lt;/string&gt;</span>
+                <span class="nt">&lt;key&gt;</span>bundleID<span class="nt">&lt;/key&gt;</span>
+                <span class="nt">&lt;string&gt;</span>com.apple.iWork.Pages<span class="nt">&lt;/string&gt;</span>
+            <span class="nt">&lt;/dict&gt;</span>
+        <span class="nt">&lt;/array&gt;</span>
+        <span class="nt">&lt;key&gt;</span>status<span class="nt">&lt;/key&gt;</span>
+        <span class="nt">&lt;integer&gt;</span>0<span class="nt">&lt;/integer&gt;</span>
+    <span class="nt">&lt;/dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>eligiblityReadDate<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;date&gt;</span>2016-03-23T20:00:00Z<span class="nt">&lt;/date&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span>
+</code></pre>
+</div>
+
+<h1 id="final-notes">Final Notes</h1>
+
+<p>With this information I can query <a href="http://buy.itunes.apple.com">buy.itunes.apple.com</a> directly from my NetBoot environment and act on the response for the running computer accordingly.</p>
+
+<p>One action might be to populate the <strong>.MASManifest</strong> file at the path show below with the array from a positive response to have them show up in the Mac App Store as available for adoption on the imaged Mac.</p>
+
+<pre><code class="language-console">/var/db/.MASManifest
+</code></pre>
+
+<p>Another might be to show a warning if a computer is expected to have all application adoptions remaining (in the case of demo units for example).</p>
+
+    </section>
+</article>
+<footer id="post-meta" class="clearfix">
+    <a href="http://twitter.com/ekkrik">
+        <img class="avatar" src="/assets/images/avatar.png">
+        <div>
+            <span class="dark">Erik Berglund</span>
+            <span>Adventures in Code</span>
+        </div>
+    </a>
+
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://erikberglund.github.io/2016/App_Store_Adoption_Eligibility_Query/ - App Store Adoption Eligibility Query by @ekkrik"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+    </section>
+</footer>
+
+<!-- Disqus comments -->
+
+
+<!-- Archive post list -->
+
+
+
+
+
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-XXXXXXXX-X', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
+
+
+
