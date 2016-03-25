@@ -16,7 +16,7 @@ gems: [jekyll-paginate]
 paginate: 20
 baseurl: /
 domain_name: 'http://erikberglund.github.io'
-google_analytics: 'UA-XXXXXXXX-X'
+google_analytics: 'UA-75593310-1'
 disqus: false
 disqus_shortname: 'your-disqus-shortname'
 
