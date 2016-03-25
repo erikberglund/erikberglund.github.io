@@ -15,13 +15,13 @@ When you buy a new computer from Apple, the following Mac App Store applications
 <br>
 To update them, the user has to "adopt" the applications using an Apple ID. ([HT203658](https://support.apple.com/en-us/HT203658))
 
-By doing that, the applications become associated with that Apple ID locally and the computer used to adopt the licenses has it's free licenses removed from the Apple servers.
+By doing that, the applications become associated with that Apple ID locally and the computer that's used to adopt the licenses has it's free licenses removed from the Apple servers.
 
 This means that the apps can't be adopted by another Apple ID using the same computer.
 
 # Adoption Eligibility
 
-Each time the Mac App Store application launches, it reaches out to [buy.itunes.apple.com](http://buy.itunes.apple.com) which returns the status of the running machine's app adoption eligibility.
+When the Mac App Store application launches, it reaches out to [buy.itunes.apple.com](http://buy.itunes.apple.com) which returns the status of the running machine's app adoption eligibility.
 
 The server response is written to this file:
 
@@ -91,6 +91,8 @@ If one or more applications are available for adoption, an array of application 
 ```
 
 So, to see the adoption status of a running computer, you only have to look in this file.
+
+I've seen this file be empty on some systems. I have also seen instances when this query is never sent by the Mac App Store. In those cases running the query yourself is a good way to find out the computer's app adoption status.
 
 # Deciphering the query
 

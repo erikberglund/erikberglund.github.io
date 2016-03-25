@@ -48,13 +48,13 @@
 <p><br />
 To update them, the user has to “adopt” the applications using an Apple ID. (<a href="https://support.apple.com/en-us/HT203658">HT203658</a>)</p>
 
-<p>By doing that, the applications become associated with that Apple ID locally and the computer used to adopt the licenses has it’s free licenses removed from the Apple servers.</p>
+<p>By doing that, the applications become associated with that Apple ID locally and the computer that’s used to adopt the licenses has it’s free licenses removed from the Apple servers.</p>
 
 <p>This means that the apps can’t be adopted by another Apple ID using the same computer.</p>
 
 <h1 id="adoption-eligibility">Adoption Eligibility</h1>
 
-<p>Each time the Mac App Store application launches, it reaches out to <a href="http://buy.itunes.apple.com">buy.itunes.apple.com</a> which returns the status of the running machine’s app adoption eligibility.</p>
+<p>When the Mac App Store application launches, it reaches out to <a href="http://buy.itunes.apple.com">buy.itunes.apple.com</a> which returns the status of the running machine’s app adoption eligibility.</p>
 
 <p>The server response is written to this file:</p>
 
@@ -122,6 +122,8 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 </div>
 
 <p>So, to see the adoption status of a running computer, you only have to look in this file.</p>
+
+<p>I’ve seen this file be empty on some systems. I have also seen instances when this query is never sent by the Mac App Store. In those cases running the query yourself is a good way to find out the computer’s app adoption status.</p>
 
 <h1 id="deciphering-the-query">Deciphering the query</h1>
 
