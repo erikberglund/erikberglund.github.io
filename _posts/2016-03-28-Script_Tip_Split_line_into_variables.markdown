@@ -4,7 +4,7 @@ description: Assigning multiple variables with values from a single line
 date: 2016-03-28 20:00:00
 ---
 
-This is a BASH script tip for improving multiple variable assignments from a single line.
+This is a BASH script tip for improving multi-variable assignments from a single line.
 
 # Example
 
