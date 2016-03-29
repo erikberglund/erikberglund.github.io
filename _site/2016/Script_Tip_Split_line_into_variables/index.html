@@ -35,7 +35,7 @@
         <h2 class="headline">March 28, 2016</h2>
     </header>
     <section id="post-body">
-        <p>This is a BASH script tip for improving multi-variable assignments from a single line.</p>
+        <p>This is a BASH script tip for improving multi-variable assignments from a single input line.</p>
 
 <h1 id="example">Example</h1>
 
@@ -45,7 +45,7 @@
 10.11.4
 </code></pre>
 </div>
-<p>To split the components of the version string into their own variables, one approach is this:</p>
+<p>When assign the components from the version string into separate variables I often see this:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">major</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="k">)</span>
 <span class="nv">minor</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $2}'</span> <span class="k">)</span>
@@ -55,7 +55,7 @@
 
 <p>This works fine, but calls <strong>sw_vers</strong> and <strong>awk</strong> three times to parse the same string into variables.</p>
 
-<p>We could remove the repeated calls to <strong>sw_vers</strong> by assigning it’s output to a variable and then use the variable as input to the awk commands:</p>
+<p>We could remove the repeated calls to <strong>sw_vers</strong> by assigning it’s output to a variable and then use that variable as input to the awk commands:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">version</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion <span class="k">)</span>
 <span class="nv">major</span><span class="o">=</span><span class="k">$(</span> awk -F<span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
@@ -96,27 +96,27 @@
 </code></pre>
 </div>
 
-<p>When executed, <strong>read</strong> will use the separator to split the input line and assign each value one by one to the variable names defined.</p>
+<p>When executed, <strong>read</strong> will use the separator to split the input line and assign each value one by one to each of the variable names defined.</p>
 
 <h1 id="matching-number-of-variables-and-values">Matching number of variables and values</h1>
 
-<p>If I define <u>fewer</u> variable names than there are values after the line is split, <strong>read</strong> will assign one value to each variable until there are no more variables to assign. After that it will just add the remainder of the line to the last variable (including separators).</p>
+<p>If I define <u>fewer</u> variable names than there are available values, <strong>read</strong> will assign one value to each variable until there are no more variables to assign. After that it will just add the remainder of the line to the last variable (including separators).</p>
 
 <p>Consider this from the above example, but here I’ve defined <u>fewer</u> variable names than values:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
 
-<span class="c"># Now the variables hold these values:</span>
+<span class="c"># Now the variables hold the following values:</span>
 <span class="o">(</span><span class="nv">major</span><span class="o">=</span>10<span class="o">)</span>
 <span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11.4<span class="o">)</span>
 </code></pre>
 </div>
 
-<p>If I define <u>more</u> variable names than there are values, <strong>read</strong> will just fill each variable until there are no more values to assign and then assign an empty value to the remaining variables:</p>
+<p>If I define <u>more</u> variable names than there are values, <strong>read</strong> will just fill each variable until there are no more values to assign and then assign empty values to the remaining variables:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor patch beta &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
 
-<span class="c"># Now the variables hold these values:</span>
+<span class="c"># Now the variables hold the following values:</span>
 <span class="o">(</span><span class="nv">major</span><span class="o">=</span>10<span class="o">)</span>
 <span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11<span class="o">)</span>
 <span class="o">(</span><span class="nv">patch</span><span class="o">=</span>4<span class="o">)</span>
@@ -124,13 +124,13 @@
 </code></pre>
 </div>
 
-<h1 id="only-assign-some-variables-and-values">Only assign some variables and values</h1>
+<h1 id="only-assign-a-subset-of-values-from-the-line">Only assign a subset of values from the line</h1>
 
 <p>If you don’t want want the entire line assigned to variables you should parse the line before passing it to <strong>read</strong>. Then you can control what variables and values will be associated:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">read</span> -r minor patch &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $2"\ "$3}'</span> <span class="o">)</span>
 
-<span class="c"># Now the variables hold these values:</span>
+<span class="c"># Now the variables hold the following values:</span>
 <span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11<span class="o">)</span>
 <span class="o">(</span><span class="nv">patch</span><span class="o">=</span>4<span class="o">)</span>
 </code></pre>
@@ -138,7 +138,7 @@
 
 <h1 id="man-page">man page</h1>
 
-<p>Because <strong>read</strong> is a BASH builtin command it doesn’t have it’s own man page.</p>
+<p>Because <strong>read</strong> is a BASH <a href="http://tldp.org/LDP/abs/html/internal.html">builtin</a> command it doesn’t have it’s own man page.</p>
 
 <p>You can use this command to jump to the <strong>read</strong> section in the <em>bash</em> man page:</p>
 
@@ -156,7 +156,7 @@
 
 <h1 id="final-notes">Final Notes</h1>
 
-<p>By saving computer resources (removing unnecessary subprocesses and pipes), we’ve reduced the execution time of the variable assignment in our example by <strong>55%</strong>.</p>
+<p>By saving computer resources (removing unnecessary subshells and pipes), we’ve reduced the execution time of the variable assignment in our example by <strong>55%</strong> (real time).</p>
 
 <p>This is the time each example took:</p>
 
