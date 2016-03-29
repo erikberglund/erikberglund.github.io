@@ -98,7 +98,7 @@
 
 <p>When executed, <strong>read</strong> will use the separator to split the input line and assign each value one by one to the variable names defined.</p>
 
-<h1 id="matching-number-or-variables-and-values">Matching number or variables and values</h1>
+<h1 id="matching-number-of-variables-and-values">Matching number of variables and values</h1>
 
 <p>If I define <u>fewer</u> variable names than there are values after the line is split, <strong>read</strong> will assign one value to each variable until there are no more variables to assign. After that it will just add the remainder of the line to the last variable (including separators).</p>
 
@@ -112,7 +112,7 @@
 </code></pre>
 </div>
 
-<p>If I define <u>more</u> variable names than there are values, <strong>read</strong> will just fill each variable until there are no more values to assign and then assign empty values to the remaining variables:</p>
+<p>If I define <u>more</u> variable names than there are values, <strong>read</strong> will just fill each variable until there are no more values to assign and then assign an empty value to the remaining variables:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor patch beta &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
 

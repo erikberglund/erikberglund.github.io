@@ -67,7 +67,7 @@ I use process substitution to pass the output from **sw_vers** to the input for 
 
 When executed, **read** will use the separator to split the input line and assign each value one by one to the variable names defined.
 
-# Matching number or variables and values
+# Matching number of variables and values
 
 If I define <u>fewer</u> variable names than there are values after the line is split, **read** will assign one value to each variable until there are no more variables to assign. After that it will just add the remainder of the line to the last variable (including separators).
 
@@ -81,7 +81,7 @@ IFS='.' read -r major minor < <( /usr/bin/sw_vers -productVersion )
 (minor=11.4)
 ```
 
-If I define <u>more</u> variable names than there are values, **read** will just fill each variable until there are no more values to assign and then assign empty values to the remaining variables:
+If I define <u>more</u> variable names than there are values, **read** will just fill each variable until there are no more values to assign and then assign an empty value to the remaining variables:
 
 ```bash
 IFS='.' read -r major minor patch beta < <( /usr/bin/sw_vers -productVersion )
