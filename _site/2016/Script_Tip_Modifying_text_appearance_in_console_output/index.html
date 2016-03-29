@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>erikberglund.github.io - Script Tip: Modifying text appearance in console output</title>
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="/rss.xml">
+  <link rel="stylesheet" href="/assets/css/highlight.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    
+        <a href="/"> <span class="arrow">←</span> Home </a>
+    
+
+    
+        
+            <a href="/about">About </a>
+        
+    
+    <a class="cta" href="/feed.xml">Subscribe</a>
+</nav>
+
+  
+
+  <section id="wrapper" class="">
+    <article class="post">
+    <header>
+        <h1>Script Tip: Modifying text appearance in console output</h1>
+        <h2 class="headline">March 29, 2016</h2>
+    </header>
+    <section id="post-body">
+        <p>When writing user-facing scripts you sometimes want to emphasise a word or a line in the text printed to the console to make it easier to read (or harder to miss).</p>
+
+<p>Common use cases include changing the text <font color="red">c</font><font color="green">o</font><font color="cyan">l</font><font color="blue">o</font><font color="magenta">r</font> or setting attributes like <strong>bold</strong> or <u>underlined</u>.</p>
+
+<p>This is made possible through the ISO/IEC 6429 SGR (Select Graphic Rendition) escape sequences (<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>) (commonly referred to as the <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_codes">ANSI escape codes</a>).</p>
+
+<p>When an SGR escape sequence is sent, the terminal application interprets the code and modifies the appearance of all subsequent characters printed to match the command until a new escape sequence is sent that either updates or clears the current modifications.</p>
+
+<h1 id="tput">tput</h1>
+
+<p>There are many different terminal control languages. Browse the following directory to see all language files (<em>terminfo</em>) recoginzed by your system:</p>
+
+<pre><code class="language-console">/usr/share/terminfo
+</code></pre>
+
+<p>Because of the lack of standarization there was a need to create a tool that could translate what you inteded the terminal to display to the correct escape code for the current terminal.</p>
+
+<p><a href="x-man-page://1/tput"><strong>tput</strong></a> handles that translation for most of the escape sequences needed in a portable way.</p>
+
+<p>This is the recommended way of passing escape sequences to the terminal (instead of hardcoding the  values for a specific terminal type).</p>
+
+<h1 id="my-setup">My setup</h1>
+
+<p>In BASH, I use a function to set up variables for the escape sequences I’m going to use in the script. Then I use the variable name (instead of the tput command or hardcoded escape sequence) directly inline with the text I want to output.</p>
+
+<p>By referencing the escape sequences by their variable names, it’s easier to understand what will be printed to the screen, but also easier (and faster) to write correct code.</p>
+
+<p>Here is a link to my reference function containing the variables I often use: <a href="https://github.com/erikberglund/Scripts/blob/master/Functions/sgr_escape_sequence_variables/function_sgr_escape_sequence_variables.function">SGR variables</a></p>
+
+<h1 id="color-foreground">Color (Foreground)</h1>
+
+<p>When adding this to a script, I create a new function and add the ones I am going to use instead of copying and pasting all escape sequences (to avoid unused variables).</p>
+
+<p>This function is setting up the variables for the foreground color escape sequences I’ll need:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sgr_variables() {
+  # Foreground text colors
+  red=$(tput setaf 1) # Red
+  grn=$(tput setaf 2) # Green
+  blu=$(tput setaf 4) # Blue
+  def=$'\e[39m'       # Default foreground color
+  
+  # Deactivate ALL sgr attributes and colors.
+  clr=$(tput sgr0)
+}
+</code></pre>
+</div>
+<p>The variables can then be used inline with the text to be printed:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+sgr_variables
+<span class="nb">printf</span> <span class="s2">"%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"</span><span class="k">${</span><span class="nv">red</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">grn</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">blu</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
+</code></pre>
+</div>
+<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_color.png" alt="sgr_color" /></p>
+
+<h1 id="color-background">Color (Background)</h1>
+
+<p>Using the example from above, but this time change the text background color instead:</p>
+
+<p><em>I have updated the <strong>sgr_variables</strong> function to include the new variables.</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+sgr_variables
+<span class="nb">printf</span> <span class="s2">"%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"</span><span class="k">${</span><span class="nv">bgred</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">bgdef</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">bggrn</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">bgdef</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">bgblu</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
+</code></pre>
+</div>
+<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_bgcolor.png" alt="sgr_bgcolor" /></p>
+
+<h1 id="attributes">Attributes</h1>
+
+<p>The following attributes can also be sent as escape sequences to modify text appearance:</p>
+
+<ul>
+  <li>Bold</li>
+  <li>Dim</li>
+  <li>Underscore</li>
+  <li>Blink</li>
+  <li>Reverse (Swap foreground and background color)</li>
+  <li>Hidden</li>
+</ul>
+
+<p><br />
+Using the first example, but also adding some text attributes:</p>
+
+<ol>
+  <li>Add <strong>Bold</strong> to <font color="red">Red</font></li>
+  <li>Add <strong>Dim</strong> to <font color="green">Green</font> (bold is still active)</li>
+  <li>Remove Bold and Dim by using <em>${nobld}</em></li>
+  <li>Add <strong>Underline</strong> to <font color="blue">Blue</font></li>
+</ol>
+
+<p><br />
+<em>I have updated the <strong>sgr_variables</strong> function to include the new variables.</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+sgr_variables
+<span class="nb">printf</span> <span class="s2">"%s</span><span class="se">\n</span><span class="s2">"</span> <span class="se">\</span>
+<span class="s2">"</span><span class="k">${</span><span class="nv">red</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">grn</span><span class="k">}${</span><span class="nv">dim</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">nobld</span><span class="k">}${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">blu</span><span class="k">}${</span><span class="nv">uln</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
+</code></pre>
+</div>
+<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_attributes.png" alt="sgr_attributes" /></p>
+
+<h1 id="example-use-case">Example Use Case</h1>
+
+<p><strong>Colorized Status</strong><br />
+This is an example that will print three status messages in different colors:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">printf</span> <span class="s2">"%-15s</span><span class="se">\t</span><span class="s2">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"StatusOk:"</span>   <span class="s2">"[</span><span class="k">${</span><span class="nv">grn</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">OK</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">]"</span>
+<span class="nb">printf</span> <span class="s2">"%-15s</span><span class="se">\t</span><span class="s2">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"StatusWarn:"</span>   <span class="s2">"[</span><span class="k">${</span><span class="nv">yel</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">WARN</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">]"</span>
+<span class="nb">printf</span> <span class="s2">"%-15s</span><span class="se">\t</span><span class="s2">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"StatusError:"</span> <span class="s2">"[</span><span class="k">${</span><span class="nv">red</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">ERROR</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">]"</span>
+</code></pre>
+</div>
+<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_status.png" alt="sgr_status" /></p>
+
+<h1 id="final-notes">Final Notes</h1>
+
+<p>The escape sequence variables are not tied to <strong>printf</strong>, they can just as easily be used with <strong>echo</strong>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+sgr_variables
+<span class="nb">echo</span> <span class="s2">"</span><span class="k">${</span><span class="nv">red</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">grn</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">blu</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
+</code></pre>
+</div>
+<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_color.png" alt="sgr_color" /></p>
+
+<p>To print your current terminal name, use this command:</p>
+
+<pre><code class="language-console">echo $TERM
+</code></pre>
+
+<p>To print your current terminal <em>terminfo</em> file, use this command:</p>
+
+<pre><code class="language-console">infocmp -L -1
+</code></pre>
+
+<hr />
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Section <strong>8.3.117</strong> of the <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">Standard ECMA-48 (Control Functions for Coded Character Sets)</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+    </section>
+</article>
+<footer id="post-meta" class="clearfix">
+    <a href="http://twitter.com/ekkrik">
+        <img class="avatar" src="/assets/images/avatar.png">
+        <div>
+            <span class="dark">Erik Berglund</span>
+            <span>Adventures in Code</span>
+        </div>
+    </a>
+
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://erikberglund.github.io/2016/Script_Tip_Modifying_text_appearance_in_console_output/ - Script Tip: Modifying text appearance in console output by @ekkrik"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+    </section>
+</footer>
+
+<!-- Disqus comments -->
+
+
+<!-- Archive post list -->
+
+
+
+
+
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75593310-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
+
+
+

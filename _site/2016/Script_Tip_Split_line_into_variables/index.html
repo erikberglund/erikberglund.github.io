@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>erikberglund.github.io - Script Tip: Split line into variables</title>
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="/rss.xml">
+  <link rel="stylesheet" href="/assets/css/highlight.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    
+        <a href="/"> <span class="arrow">←</span> Home </a>
+    
+
+    
+        
+            <a href="/about">About </a>
+        
+    
+    <a class="cta" href="/feed.xml">Subscribe</a>
+</nav>
+
+  
+
+  <section id="wrapper" class="">
+    <article class="post">
+    <header>
+        <h1>Script Tip: Split line into variables</h1>
+        <h2 class="headline">March 28, 2016</h2>
+    </header>
+    <section id="post-body">
+        <p>This is a BASH script tip for improving multi-variable assignments from a single input line.</p>
+
+<h1 id="example">Example</h1>
+
+<p>On OS X, <strong>/usr/bin/sw_vers -productVersion</strong> will output the current computer’s OS version:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ /usr/bin/sw_vers -productVersion
+10.11.4
+</code></pre>
+</div>
+<p>When assign the components from the version string into separate variables I often see this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">major</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="k">)</span>
+<span class="nv">minor</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $2}'</span> <span class="k">)</span>
+<span class="nv">patch</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $3}'</span> <span class="k">)</span>
+</code></pre>
+</div>
+
+<p>This works fine, but calls <strong>sw_vers</strong> and <strong>awk</strong> three times to parse the same string into variables.</p>
+
+<p>We could remove the repeated calls to <strong>sw_vers</strong> by assigning it’s output to a variable and then use that variable as input to the awk commands:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">version</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion <span class="k">)</span>
+<span class="nv">major</span><span class="o">=</span><span class="k">$(</span> awk -F<span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
+<span class="nv">minor</span><span class="o">=</span><span class="k">$(</span> awk -F<span class="s1">'.'</span> <span class="s1">'{print $2}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
+<span class="nv">patch</span><span class="o">=</span><span class="k">$(</span> awk -F<span class="s1">'.'</span> <span class="s1">'{print $3}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
+</code></pre>
+</div>
+
+<p>Better, but still executes <strong>awk</strong> three times in order to parse the string and assign the variables.</p>
+
+<h1 id="read">read</h1>
+
+<p>BASH has a builtin command named <strong>read</strong> designed for this situation.</p>
+
+<p>This is what the same variable assignment looks like when using <strong>read</strong>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor patch &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
+</code></pre>
+</div>
+
+<p><strong>Command explained:</strong></p>
+
+<p>I start by defining the separator I want to use to split the input string:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>IFS='.'
+</code></pre>
+</div>
+
+<p>Then, I call the <strong>read</strong> command followed by the variable names I want to assign each value to:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>read -r major minor patch
+</code></pre>
+</div>
+
+<p>I use process substitution to pass the output from <strong>sw_vers</strong> to the input for the <strong>read</strong> command:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
+</code></pre>
+</div>
+
+<p>When executed, <strong>read</strong> will use the separator to split the input line and assign each value one by one to each of the variable names defined.</p>
+
+<h1 id="matching-number-of-variables-and-values">Matching number of variables and values</h1>
+
+<p>If I define <u>fewer</u> variable names than there are available values, <strong>read</strong> will assign one value to each variable until there are no more variables to assign. After that it will just add the remainder of the line to the last variable (including separators).</p>
+
+<p>Consider this from the above example, but here I’ve defined <u>fewer</u> variable names than values:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
+
+<span class="c"># Now the variables hold the following values:</span>
+<span class="o">(</span><span class="nv">major</span><span class="o">=</span>10<span class="o">)</span>
+<span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11.4<span class="o">)</span>
+</code></pre>
+</div>
+
+<p>If I define <u>more</u> variable names than there are values, <strong>read</strong> will just fill each variable until there are no more values to assign and then assign empty values to the remaining variables:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor patch beta &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
+
+<span class="c"># Now the variables hold the following values:</span>
+<span class="o">(</span><span class="nv">major</span><span class="o">=</span>10<span class="o">)</span>
+<span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11<span class="o">)</span>
+<span class="o">(</span><span class="nv">patch</span><span class="o">=</span>4<span class="o">)</span>
+<span class="o">(</span><span class="nv">beta</span><span class="o">=)</span>
+</code></pre>
+</div>
+
+<h1 id="only-assign-a-subset-of-values-from-the-line">Only assign a subset of values from the line</h1>
+
+<p>If you don’t want want the entire line assigned to variables you should parse the line before passing it to <strong>read</strong>. Then you can control what variables and values will be associated:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">read</span> -r minor patch &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $2"\ "$3}'</span> <span class="o">)</span>
+
+<span class="c"># Now the variables hold the following values:</span>
+<span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11<span class="o">)</span>
+<span class="o">(</span><span class="nv">patch</span><span class="o">=</span>4<span class="o">)</span>
+</code></pre>
+</div>
+
+<h1 id="man-page">man page</h1>
+
+<p>Because <strong>read</strong> is a BASH <a href="http://tldp.org/LDP/abs/html/internal.html">builtin</a> command it doesn’t have it’s own man page.</p>
+
+<p>You can use this command to jump to the <strong>read</strong> section in the <em>bash</em> man page:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>man bash | less -p <span class="s2">"^       read "</span>
+</code></pre>
+</div>
+
+<p>Here are more links to Apple’s <em>bash</em> man page (search for “<strong>read [</strong>” to find the correct section.):</p>
+
+<ul>
+  <li><a href="x-man-page://1/bash">Open in Terminal.app</a></li>
+  <li><a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/bash.1.html">Open in Browser</a><br />
+<br /></li>
+</ul>
+
+<h1 id="final-notes">Final Notes</h1>
+
+<p>By saving computer resources (removing unnecessary subshells and pipes), we’ve reduced the execution time of the variable assignment in our example by <strong>55%</strong> (real time).</p>
+
+<p>This is the time each example took:</p>
+
+<ul>
+  <li>
+    <p><strong>sw_vers and awk each called three times:</strong></p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code>real	0m0.031s  
+user	0m0.016s  
+ sys	0m0.016s
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p><strong>sw_vers output to variable and awk called three times:</strong></p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code>real	0m0.022s
+user	0m0.009s
+ sys	0m0.011s
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p><strong>read:</strong></p>
+
+    <div class="highlighter-rouge"><pre class="highlight"><code>real	0m0.014s
+user	0m0.002s
+ sys	0m0.003s
+</code></pre>
+    </div>
+  </li>
+</ul>
+
+    </section>
+</article>
+<footer id="post-meta" class="clearfix">
+    <a href="http://twitter.com/ekkrik">
+        <img class="avatar" src="/assets/images/avatar.png">
+        <div>
+            <span class="dark">Erik Berglund</span>
+            <span>Adventures in Code</span>
+        </div>
+    </a>
+
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://erikberglund.github.io/2016/Script_Tip_Split_line_into_variables/ - Script Tip: Split line into variables by @ekkrik"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+    </section>
+</footer>
+
+<!-- Disqus comments -->
+
+
+<!-- Archive post list -->
+
+
+
+
+
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75593310-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
+
+
+
