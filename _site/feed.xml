@@ -7,6 +7,19 @@
     <atom:link href="http://erikberglund.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Script Tip: Split line into variables</title>
+        
+        
+          <description>&lt;p&gt;This is a BASH script tip for improving multiple variable assignments from a single line.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 28 Mar 2016 22:00:00 +0200</pubDate>
+        <link>http://erikberglund.github.io/2016/Script_Tip_Split_line_into_variables/</link>
+        <guid isPermaLink="true">http://erikberglund.github.io/2016/Script_Tip_Split_line_into_variables/</guid>
+      </item>
+    
+      <item>
         <title>App Store Adoption Eligibility Query</title>
         
         
