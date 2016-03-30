@@ -60,7 +60,7 @@
 </code></pre>
 </div>
 
-<p>To get the marketing name of a running os, you can use <code class="highlighter-rouge">sw_vers</code> to fill the query value:</p>
+<p>To get the marketing name of a running os, you can use <a href="x-man-page://1/sw_vers"><strong>sw_vers</strong></a> to fill the query value:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?edid<span class="o">=</span><span class="k">$(</span> sw_vers -productVersion <span class="k">)</span>
 </code></pre>
@@ -110,15 +110,15 @@
 </code></pre>
 </div>
 
-<p>To get the marketing name of a running computer, you can use <code class="highlighter-rouge">ioreg</code> to fill the query value:</p>
+<p>To get the marketing name of a running computer, you can use <a href="x-man-page://8/ioreg"><strong>ioreg</strong></a> to fill the query value:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?cc<span class="o">=</span><span class="k">$(</span> ioreg -c IOPlatformExpertDevice -d 2 | awk -F<span class="se">\"</span> <span class="s1">'/IOPlatformSerialNumber/{ sn=$(NF-1); if (length(sn) == 12) count=3; else if (length(sn) == 11) count=2; print substr(sn, length(sn) - count, length(sn))}'</span> <span class="k">)</span>
 </code></pre>
 </div>
 
-<p>I use awk to print the x last characters depending on the serial number length.</p>
+<p>I use <a href="x-man-page://1/awk"><strong>awk</strong></a> to print the x last characters depending on the serial number length.</p>
 
-<p>Here is a version of the awk program used by itself on the Airport Express serial number:</p>
+<p>Here is a version of the <a href="x-man-page://1/awk"><strong>awk</strong></a> program used in its own on the Airport Express serial number:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>awk <span class="s1">'{ if (length($0) == 12) count=3; else if (length($0) == 11) count=2; print substr($0, length($0) - count, length($0))}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"F12HQHPADV2R"</span>
 </code></pre>
@@ -131,7 +131,7 @@
 
 <h1 id="cleaning-output">Cleaning output</h1>
 
-<p>If you only want the marketing name as output, you can use the following xpath query to print the <em>configCode</em> node content from the response:</p>
+<p>If you only want the marketing name as output, you can use the following <a href="x-man-page://3/XML::XPath"><strong>xpath</strong></a> query to print the <em>configCode</em> node content from the response:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="s1">'/root/configCode/text()'</span>
 </code></pre>

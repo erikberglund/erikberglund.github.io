@@ -29,7 +29,7 @@ _Response:_
 </root>
 ```
 
-To get the marketing name of a running os, you can use `sw_vers` to fill the query value:
+To get the marketing name of a running os, you can use [**sw_vers**](x-man-page://1/sw_vers) to fill the query value:
 
 ```bash
 curl -s http://support-sp.apple.com/sp/product?edid=$( sw_vers -productVersion )
@@ -77,15 +77,15 @@ _Response:_
 </root>
 ```
 
-To get the marketing name of a running computer, you can use `ioreg` to fill the query value:
+To get the marketing name of a running computer, you can use [**ioreg**](x-man-page://8/ioreg) to fill the query value:
 
 ```bash
 curl -s http://support-sp.apple.com/sp/product?cc=$( ioreg -c IOPlatformExpertDevice -d 2 | awk -F\" '/IOPlatformSerialNumber/{ sn=$(NF-1); if (length(sn) == 12) count=3; else if (length(sn) == 11) count=2; print substr(sn, length(sn) - count, length(sn))}' )
 ```
 
-I use awk to print the x last characters depending on the serial number length.
+I use [**awk**](x-man-page://1/awk) to print the x last characters depending on the serial number length.
 
-Here is a version of the awk program used by itself on the Airport Express serial number:
+Here is a version of the [**awk**](x-man-page://1/awk) program used in its own on the Airport Express serial number:
 
 ```bash
 awk '{ if (length($0) == 12) count=3; else if (length($0) == 11) count=2; print substr($0, length($0) - count, length($0))}' <<< "F12HQHPADV2R"
@@ -100,7 +100,7 @@ DV2R
 
 # Cleaning output
 
-If you only want the marketing name as output, you can use the following xpath query to print the _configCode_ node content from the response:
+If you only want the marketing name as output, you can use the following [**xpath**](x-man-page://3/XML::XPath) query to print the _configCode_ node content from the response:
 
 ```bash
 '/root/configCode/text()'
