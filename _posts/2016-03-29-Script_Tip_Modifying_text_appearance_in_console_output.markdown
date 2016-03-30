@@ -65,7 +65,7 @@ printf "%s\n" "${red}Red${def},${grn}Green${def},${blu}Blue${clr}"
 
 Using the example from above, but this time change the text background color instead:
 
-_I have updated the **sgr_variables** function to include the new variables._
+_I have updated the **sgr_variables** function to include the new variables from my [referece](https://github.com/erikberglund/Scripts/blob/master/Functions/sgr_escape_sequence_variables/function_sgr_escape_sequence_variables.function)._
 
 ```bash
 # Call the function ONCE to set up the variables before using them.
@@ -94,7 +94,7 @@ Using the first example, but also adding some text attributes:
    4. Add **Underline** to <font color="blue">Blue</font>
 
 <br>
-_I have updated the **sgr_variables** function to include the new variables._
+_I have updated the **sgr_variables** function to include the new variables from my [referece](https://github.com/erikberglund/Scripts/blob/master/Functions/sgr_escape_sequence_variables/function_sgr_escape_sequence_variables.function)._
 
 ```bash
 # Call the function ONCE to set up the variables before using them.
