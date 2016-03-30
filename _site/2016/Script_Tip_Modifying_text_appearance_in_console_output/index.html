@@ -35,7 +35,7 @@
         <h2 class="headline">March 29, 2016</h2>
     </header>
     <section id="post-body">
-        <p>When writing user-facing scripts you sometimes want to emphasise a word or a line in the text printed to the console to make it easier to read (or harder to miss).</p>
+        <p>When writing user-facing scripts you sometimes want to emphasize a word or a line in the text printed to the console to make it easier to read (or harder to miss).</p>
 
 <p>Common use cases include changing the text <font color="red">c</font><font color="green">o</font><font color="cyan">l</font><font color="blue">o</font><font color="magenta">r</font> or setting attributes like <strong>bold</strong> or <u>underlined</u>.</p>
 
@@ -45,14 +45,14 @@
 
 <h1 id="tput">tput</h1>
 
-<p>There are many different terminal control languages. Browse the following directory to see all language files (<em>terminfo</em>) recoginzed by your system:</p>
+<p>There are many different terminal control languages. Browse the following directory to see all language files (<a href="x-man-page://5/terminfo"><em>terminfo</em></a>) recognized by your system:</p>
 
 <pre><code class="language-console">/usr/share/terminfo
 </code></pre>
 
-<p>Because of the lack of standarization there was a need to create a tool that could translate what you inteded the terminal to display to the correct escape code for the current terminal.</p>
+<p>Because of the lack of standardization there was a need to create a tool that could translate what you intended the terminal to display to the correct escape code for the current terminal.</p>
 
-<p><a href="x-man-page://1/tput"><strong>tput</strong></a> handles that translation for most of the escape sequences needed in a portable way.</p>
+<p><a href="x-man-page://1/tput">tput</a> handles that translation for most of the escape sequences needed in a portable way.</p>
 
 <p>This is the recommended way of passing escape sequences to the terminal (instead of hardcoding the  values for a specific terminal type).</p>
 
@@ -152,7 +152,7 @@ This is an example that will print three status messages in different colors:</p
 
 <h1 id="final-notes">Final Notes</h1>
 
-<p>The escape sequence variables are not tied to <strong>printf</strong>, they can just as easily be used with <strong>echo</strong>:</p>
+<p>The escape sequence variables are not tied to <a href="x-man-page://1/printf">printf</a>, they can just as easily be used with <a href="x-man-page://1/echo">echo</a>:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
 sgr_variables
@@ -161,12 +161,12 @@ sgr_variables
 </div>
 <p><img src="http://erikberglund.github.io/assets/screenshots/sgr_color.png" alt="sgr_color" /></p>
 
-<p>To print your current terminal name, use this command:</p>
+<p>To print your current terminal type, use this command:</p>
 
 <pre><code class="language-console">echo $TERM
 </code></pre>
 
-<p>To print your current terminal <em>terminfo</em> file, use this command:</p>
+<p>To print your current terminal <a href="x-man-page://5/terminfo"><em>terminfo</em></a> file, use this command:</p>
 
 <pre><code class="language-console">infocmp -L -1
 </code></pre>
