@@ -331,7 +331,7 @@ _Example response when multiple applications are available for adoption:_
 
 With this information I can query [buy.itunes.apple.com](http://buy.itunes.apple.com) directly from my NetBoot environment and act on the response for the running computer accordingly.
 
-One action might be to populate the **.MASManifest** file at the path show below with the array from a positive response to have them show up in the Mac App Store as available for adoption on the imaged Mac. 
+One action might be to populate the **.MASManifest** file at the path shown below with the array from a positive response to have the applications show up in the Mac App Store as available for adoption on the imaged Mac. 
 
 ```console
 /var/db/.MASManifest
