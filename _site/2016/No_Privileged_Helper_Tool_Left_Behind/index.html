@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>erikberglund.github.io - No Privileged Helper Tool Left Behind</title>
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="/rss.xml">
+  <link rel="stylesheet" href="/assets/css/highlight.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    
+        <a href="/"> <span class="arrow">←</span> Home </a>
+    
+
+    
+        
+            <a href="/about">About </a>
+        
+    
+    <a class="cta" href="/feed.xml">Subscribe</a>
+</nav>
+
+  
+
+  <section id="wrapper" class="">
+    <article class="post">
+    <header>
+        <h1>No Privileged Helper Tool Left Behind</h1>
+        <h2 class="headline">March 30, 2016</h2>
+    </header>
+    <section id="post-body">
+        <p>With every release of OS X, Apple continues to improve and add new features to help developers in minimizing their application’s <a href="https://en.wikipedia.org/wiki/Attack_surface">attack surface</a>. And as <a href="https://en.wikipedia.org/wiki/Privilege_escalation">privilege escalation</a> is the base of most attacks, that is one of the most important vectors to keep patched and secure.</p>
+
+<p>One of the many changes made to limit <a href="https://en.wikipedia.org/wiki/Privilege_escalation">privilege escalation attacks</a> in OS X was the move to <a href="https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingXPCServices.html">XPC</a> as a way to attain <a href="https://en.wikipedia.org/wiki/Privilege_separation">privilege separation</a> between processes used by an application.</p>
+
+<p><a href="https://developer.apple.com/library/mac/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingXPCServices.html">XPC</a> allows a developer to split an application into smaller components which are only granted the minimum rights required to perform their explicit function. See “<a href="https://en.wikipedia.org/wiki/Principle_of_least_privilege">principle of least privilege</a>”.</p>
+
+<p>When done right, this removes the possibility for an attacker to gain full system rights if they manage to exploit one of the component processes running with restricted rights.</p>
+
+<h1 id="installing-a-privileged-helper-tool">Installing a Privileged Helper Tool</h1>
+
+<p>Before Snow Leopard, privilege escalation for an application was requested by the main application and granted to the requested tool by the system’s <a href="https://developer.apple.com/library/mac/documentation/Security/Conceptual/Security_Overview/Architecture/Architecture.html">Security Server</a>.</p>
+
+<p>But as of 10.7, <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/authorization_ref/#//apple_ref/c/func/AuthorizationExecuteWithPrivileges">AuthorizationExecuteWithPrivileges</a> was deprecated and since then all privilege escalation <u>should</u> (not required) be handled by a privileged helper tool.</p>
+
+<blockquote>
+  <p><em>As of Snow Leopard, this is the preferred method of managing privilege escalation on Mac OS X and should be used instead of earlier approaches such as BetterAuthorizationSample or directly calling <a href="https://developer.apple.com/library/mac/documentation/Security/Reference/authorization_ref/#//apple_ref/c/func/AuthorizationExecuteWithPrivileges">AuthorizationExecuteWithPrivileges</a><br />
+                                                                                          – <a href="https://developer.apple.com/library/mac/samplecode/SMJobBless/Introduction/Intro.html">SMJobBless sample project</a></em>.</p>
+</blockquote>
+
+<p>Typically, <a href="https://developer.apple.com/library/mac/documentation/ServiceManagement/Reference/ServiceManagement_header_reference/#//apple_ref/c/func/SMJobBless">SMJobBless</a> is used to install the privileged helper tool on your system.</p>
+
+<p><em>Example prompt shown to the user when requesting to install the <a href="https://github.com/lindegroup/autopkgr">AutoPkgr</a> helper tool:</em></p>
+
+<p><img src="http://erikberglund.github.io/assets/screenshots/SMJobBlessInstallPrompt.png" alt="SMJobBlessInstallPrompt" /></p>
+
+<p>If the user authenticates, a <a href="x-man-page://5/launchd.plist">launchd job</a> is configured and copied here:</p>
+
+<pre><code class="language-console">/Library/LaunchDaemons/
+</code></pre>
+
+<p>The privileged helper tool binary is then copied from the main application bundle to:</p>
+
+<pre><code class="language-console">/Library/PrivilegedHelperTools/
+</code></pre>
+
+<p>The job is then registered and activated by <a href="x-man-page://8/launchd">launchd</a>.</p>
+
+<h1 id="removing-a-privileged-helper-tool">Removing a Privileged Helper Tool</h1>
+
+<p>The proper way (up until OS X 10.10 when it was <a href="https://developer.apple.com/library/mac/documentation/General/Reference/APIDiffsMacOSX10_10SeedDiff/frameworks/ServiceManagement.html">deprecated</a>) was to call <a href="https://developer.apple.com/library/mac/documentation/ServiceManagement/Reference/ServiceManagement_header_reference/index.html#//apple_ref/c/func/SMJobRemove">SMJobRemove</a> from the main application. Apple haven’t provided an official replacement to that command, so I don’t know what the officially sanctioned way to remove a privileged helper tool is.</p>
+
+<p>But, the reason I’m writing this post is not for all the times a helper tool is properly removed.
+ It’s when the main application is removed and the helper tool is left on the system listening for connections on it’s registered Mach Port.</p>
+
+<h1 id="my-concern">My Concern</h1>
+
+<p>A privileged helper tool, even a badly written one (containing an exploitable bug) is just as vulnerable to attacks with or without it’s main application installed.</p>
+
+<p>But here is the theoretical issue an orphaned privileged helper tool poses:</p>
+
+<p>Say there is a new vulnerability discovered that targets the XPCService, protocol or any other code used in the communication or authentication of the helper tool.</p>
+
+<p>In order to patch and update the tool, the developer have to release a new version of their application containing an updated helper tool and have the main application replace the potentially insecure one using <a href="https://developer.apple.com/library/mac/documentation/ServiceManagement/Reference/ServiceManagement_header_reference/#//apple_ref/c/func/SMJobBless">SMJobBless</a>.</p>
+
+<p>This process can only be done through the main application, so a helper tool left on the system would not have any chance of receiving this update. The orphaned helper tool will continue to be launched by <a href="x-man-page://8/launchd">launchd</a> and run with the old version until manually removed.</p>
+
+<p>Even if this isn’t a vulnerability in and of itself, I believe that this possible attack vector should be closed, as the helper tool doesn’t serve any purpose if the main application is removed.</p>
+
+<h1 id="previous-attacks">Previous Attacks</h1>
+
+<p>One of the most notable exploits targeting an XPC service is by a fellow Swede, <a href="https://twitter.com/emilkvarnhammar">Emil Kvarnhammar</a> of <a href="http://www.truesec.se">TrueSec</a> who uncovered the RootPipe (<a href="http://www.cvedetails.com/cve/CVE-2015-1130/">CVE-2015-1130</a>) vulnerability.</p>
+
+<p>If this topic interests you, here is a presentation from the TrueSec <a href="http://www.securityconf.se">Security Conference</a> in June 2015 where Emil talks about the concepts i’ve touched on, and about RootPipe in particular:</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cjgbPh_Freg" frameborder="0" allowfullscreen=""></iframe>
+
+<p><br /></p>
+
+<h1 id="find-privilegedhelpertools-left-behind">Find PrivilegedHelperTools left behind</h1>
+
+<p>I’ve written a script to check for orphaned helper tools, It’s available on GitHub:</p>
+
+<p><a href="https://github.com/erikberglund/Scripts/blob/master/Tools/checkPrivilegedHelperToolStatus.bash">checkPrivilegedHelperToolStatus.bash</a></p>
+
+<p>It will inspect all binaries in <strong>/Library/PrivilegedHelperTools</strong> and print the following information:</p>
+
+<ul>
+  <li>
+    <p>Helper tool info:<br />
+    <strong>Path</strong>, <strong>BundleID</strong>, <strong>Name</strong>, <strong>Version</strong></p>
+  </li>
+  <li>
+    <p>Helper tool launchd job info:<br />
+    <strong>Path</strong>, <strong>Label</strong>, <strong>State</strong> (running, waiting etc.)</p>
+  </li>
+  <li>
+    <p>Rules the tool has registered in the authorization database.</p>
+  </li>
+  <li>
+    <p>Applications registered to have access to the helper tool:<br />
+    <strong>Path</strong>, <strong>BundleID</strong>, <strong>Name</strong>, <strong>Version</strong></p>
+  </li>
+</ul>
+
+<p>If the script couldn’t find <u>any</u> application matching any of the application bundle id’s registered to interact with the helper tool, a warning will be printed describing that this helper tool might be left behind and running without a main application.</p>
+
+<p><em>Example output where I’ve installed the <a href="https://github.com/lindegroup/autopkgr">AutoPkgr</a> helper tool, then removed the application:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>        [Helper]
+           Path: /Library/PrivilegedHelperTools/com.lindegroup.AutoPkgr.helper
+                 
+                 BundleID: com.lindegroup.AutoPkgr.helper
+                 Name:     com.lindegroup.AutoPkgr.helper
+                 Version:  1.3.6
+
+       [Launchd]
+           Path: /Library/LaunchDaemons/com.lindegroup.AutoPkgr.helper.plist
+           
+                 Label:    com.lindegroup.AutoPkgr.helper
+                 State:    waiting
+             
+[Authorization DB]               
+          Rules: com.lindegroup.autopkgr.remove.schedule.run
+                 com.lindegroup.autopkgr.add.scheduled.run
+                 com.lindegroup.autopkgr.pkg.uninstaller
+                 com.lindegroup.autopkgr.uninstall.helper.tool
+                 com.lindegroup.autopkgr.pkg.installer
+
+  [Applications]
+       BundleID: com.lindegroup.AutoPkgr
+                 &lt;No application with bundle id: 'com.lindegroup.AutoPkgr' found&gt;
+                 
+                 +------------------------------------------------------+
+                 |                    !!! WARNING !!!                   |
+                 |                                                      |
+                 |    NO APPLICATION FOUND FOR PRIVILEGED HELPER TOOL   |
+                 |                                                      |
+                 |               IT  MIGHT BE LEFT BEHIND               |
+                 +------------------------------------------------------+
+</code></pre>
+</div>
+
+<h1 id="final-notes">Final Notes</h1>
+
+<p>The takeaway from this post should not be a fear of orphaned helper tools, but an awareness that they don’t fill any other purpose than to be possibly exploited by a future vulnerability, or by a devloper mistake and then being left on a system without means to be patched.</p>
+
+    </section>
+</article>
+<footer id="post-meta" class="clearfix">
+    <a href="http://twitter.com/ekkrik">
+        <img class="avatar" src="/assets/images/avatar.png">
+        <div>
+            <span class="dark">Erik Berglund</span>
+            <span>Adventures in Code</span>
+        </div>
+    </a>
+
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://erikberglund.github.io/2016/No_Privileged_Helper_Tool_Left_Behind/ - No Privileged Helper Tool Left Behind by @ekkrik"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+    </section>
+</footer>
+
+<!-- Disqus comments -->
+
+
+<!-- Archive post list -->
+
+
+
+
+
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75593310-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
+
+
+

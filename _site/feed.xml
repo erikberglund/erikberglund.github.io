@@ -7,6 +7,19 @@
     <atom:link href="http://erikberglund.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>No Privileged Helper Tool Left Behind</title>
+        
+        
+          <description>&lt;p&gt;With every release of OS X, Apple continues to improve and add new features to help developers in minimizing their application’s &lt;a href=&quot;https://en.wikipedia.org/wiki/Attack_surface&quot;&gt;attack surface&lt;/a&gt;. And as &lt;a href=&quot;https://en.wikipedia.org/wiki/Privilege_escalation&quot;&gt;privilege escalation&lt;/a&gt; is the base of most attacks, that is one of the most important vectors to keep patched and secure.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Wed, 30 Mar 2016 22:00:00 +0200</pubDate>
+        <link>http://erikberglund.github.io/2016/No_Privileged_Helper_Tool_Left_Behind/</link>
+        <guid isPermaLink="true">http://erikberglund.github.io/2016/No_Privileged_Helper_Tool_Left_Behind/</guid>
+      </item>
+    
+      <item>
         <title>Script Tip: Modifying text appearance in console output</title>
         
         
