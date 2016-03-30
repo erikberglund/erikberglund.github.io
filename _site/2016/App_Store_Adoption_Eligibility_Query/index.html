@@ -131,7 +131,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>Therefore we have to recreate the Mac App Store request ourselves.</p>
 
-<p>By enabling xml debug logging for the Mac App Store using the following defaults command:</p>
+<p>By enabling xml debug logging for the Mac App Store using the following <a href="x-man-page://1/defaults"><strong>defaults</strong></a> command:</p>
 
 <pre><code class="language-console">defaults write com.apple.commerce LogXML true
 </code></pre>
@@ -165,7 +165,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>In this context, the <strong>guid</strong> is the MAC address (without separator and all upper-case) of the first interface (en0). In my testings this value is not required, it can be left empty.</p>
 
-<p>You can use this command to print the first MAC address in the correct format:</p>
+<p>You can use this command to print the MAC address for interface <strong>en0</strong> in the correct format:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>ifconfig en0 | awk <span class="s1">'/ether/{ gsub(":",""); print toupper($2)}'</span>
 </code></pre>
@@ -184,7 +184,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>The serial-no value is a 17 character string that looks like a longer version of the standard computer serial number. That’s because it’s the <a href="http://www.insanelymac.com/forum/topic/303073-pattern-of-mlb-main-logic-board/#entry2091468">main logic board serial number</a>.</p>
 
-<p>This value is stored in nvram and by knowing it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</strong>) we can use the nvram command to retrieve the serial number:</p>
+<p>This value is stored in nvram and by knowing it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</strong>) we can use the <a href="x-man-page://8/nvram"><strong>nvram</strong></a> command to retrieve the serial number:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk <span class="s1">'{ print $NF }'</span>
 </code></pre>
@@ -199,7 +199,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>The rom-addr is a MAC address for the main logic board that’s used in conjunction with the main logic board serial number to uniquely identify a Mac.</p>
 
-<p>This value is also stored in nvram, and by using it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</strong>) we can retrieve the rom-addr using the <code class="highlighter-rouge">nvram</code> command as well:</p>
+<p>This value is also stored in nvram, and by using it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</strong>) we can retrieve the rom-addr using the <a href="x-man-page://8/nvram"><strong>nvram</strong></a> command as well:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>nvram -x 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk <span class="s1">'{ gsub(/\%/, ""); print $NF }'</span>
 </code></pre>

@@ -100,7 +100,7 @@ I want to check the adoption status from a NetBoot environment where running the
 
 Therefore we have to recreate the Mac App Store request ourselves.
 
-By enabling xml debug logging for the Mac App Store using the following defaults command:
+By enabling xml debug logging for the Mac App Store using the following [**defaults**](x-man-page://1/defaults) command:
 
 ```console
 defaults write com.apple.commerce LogXML true
@@ -137,7 +137,7 @@ In this file, we can see (in the **httpBody** key) that the request data is a pl
 
 In this context, the **guid** is the MAC address (without separator and all upper-case) of the first interface (en0). In my testings this value is not required, it can be left empty.
 
-You can use this command to print the first MAC address in the correct format:
+You can use this command to print the MAC address for interface **en0** in the correct format:
 
 ```bash
 ifconfig en0 | awk '/ether/{ gsub(":",""); print toupper($2)}'
@@ -157,7 +157,7 @@ This key set the format for the return value, we'll use the current value of **t
 
 The serial-no value is a 17 character string that looks like a longer version of the standard computer serial number. That's because it's the [main logic board serial number](http://www.insanelymac.com/forum/topic/303073-pattern-of-mlb-main-logic-board/#entry2091468).
 
-This value is stored in nvram and by knowing it's address (**4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB**) we can use the nvram command to retrieve the serial number:
+This value is stored in nvram and by knowing it's address (**4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB**) we can use the [**nvram**](x-man-page://8/nvram) command to retrieve the serial number:
 
 ```bash
 nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk '{ print $NF }'
@@ -173,7 +173,7 @@ C0252******GF2C1H
 
 The rom-addr is a MAC address for the main logic board that's used in conjunction with the main logic board serial number to uniquely identify a Mac.
 
-This value is also stored in nvram, and by using it's address (**4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM**) we can retrieve the rom-addr using the `nvram` command as well:
+This value is also stored in nvram, and by using it's address (**4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM**) we can retrieve the rom-addr using the [**nvram**](x-man-page://8/nvram) command as well:
 
 ```bash
 nvram -x 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk '{ gsub(/\%/, ""); print $NF }'
