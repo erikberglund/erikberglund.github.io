@@ -22,9 +22,9 @@ minor=$( /usr/bin/sw_vers -productVersion | awk -F'.' '{print $2}' )
 patch=$( /usr/bin/sw_vers -productVersion | awk -F'.' '{print $3}' )
 ```
 
-This works fine, but calls **sw_vers** and **awk** three times to parse the same string into variables.
+This works fine, but calls [**sw_vers**](x-man-page://1/sw_vers) and [**awk**](x-man-page://1/awk) three times to parse the same string into variables.
 
-We could remove the repeated calls to **sw_vers** by assigning it's output to a variable and then use that variable as input to the awk commands:
+We could remove the repeated calls to [**sw_vers**](x-man-page://1/sw_vers) by assigning it's output to a variable and then use that variable as input to the [**awk**](x-man-page://1/awk) commands:
 
 ```bash
 version=$( /usr/bin/sw_vers -productVersion )
@@ -33,7 +33,7 @@ minor=$( awk -F'.' '{print $2}' <<< "${version}" )
 patch=$( awk -F'.' '{print $3}' <<< "${version}" )
 ```
 
-Better, but still executes **awk** three times in order to parse the string and assign the variables.
+Better, but still executes [**awk**](x-man-page://1/awk) three times in order to parse the string and assign the variables.
 
 # read
 
@@ -59,7 +59,7 @@ Then, I call the **read** command followed by the variable names I want to assig
 read -r major minor patch
 ```
 
-I use process substitution to pass the output from **sw_vers** to the input for the **read** command:
+I use process substitution to pass the output from [**sw_vers**](x-man-page://1/sw_vers) to the input for the **read** command:
 
 ```bash
 < <( /usr/bin/sw_vers -productVersion )

@@ -52,7 +52,7 @@
 
 <p>Because of the lack of standardization there was a need to create a tool that could translate what you intended the terminal to display to the correct escape code for the current terminal.</p>
 
-<p><a href="x-man-page://1/tput">tput</a> handles that translation for most of the escape sequences needed in a portable way.</p>
+<p><a href="x-man-page://1/tput"><strong>tput</strong></a> handles that translation for most of the escape sequences needed in a portable way.</p>
 
 <p>This is the recommended way of passing escape sequences to the terminal (instead of hardcoding the  values for a specific terminal type).</p>
 
@@ -152,7 +152,7 @@ This is an example that will print three status messages in different colors:</p
 
 <h1 id="final-notes">Final Notes</h1>
 
-<p>The escape sequence variables are not tied to <a href="x-man-page://1/printf">printf</a>, they can just as easily be used with <a href="x-man-page://1/echo">echo</a>:</p>
+<p>The escape sequence variables are not tied to <a href="x-man-page://1/printf"><strong>printf</strong></a>, they can just as easily be used with <a href="x-man-page://1/echo"><strong>echo</strong></a>:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
 sgr_variables

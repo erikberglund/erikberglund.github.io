@@ -22,7 +22,7 @@ There are many different terminal control languages. Browse the following direct
 
 Because of the lack of standardization there was a need to create a tool that could translate what you intended the terminal to display to the correct escape code for the current terminal.
 
-[tput](x-man-page://1/tput) handles that translation for most of the escape sequences needed in a portable way.
+[**tput**](x-man-page://1/tput) handles that translation for most of the escape sequences needed in a portable way.
 
 This is the recommended way of passing escape sequences to the terminal (instead of hardcoding the  values for a specific terminal type).
 
@@ -118,7 +118,7 @@ printf "%-15s\t%s\n" "StatusError:" "[${red}${bld}ERROR${clr}]"
 
 # Final Notes
 
-The escape sequence variables are not tied to [printf](x-man-page://1/printf), they can just as easily be used with [echo](x-man-page://1/echo):
+The escape sequence variables are not tied to [**printf**](x-man-page://1/printf), they can just as easily be used with [**echo**](x-man-page://1/echo):
 
 ```bash
 # Call the function ONCE to set up the variables before using them.
