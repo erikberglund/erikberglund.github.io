@@ -74,9 +74,9 @@ If this topic interests you, here is a presentation from the TrueSec [Security C
 
 # Find PrivilegedHelperTools left behind
 
-I've written a script to check for orphaned helper tools, It's available on GitHub:
+I've written a script to check for orphaned helper tools (currently requires OS X 10.10)
 
-[checkPrivilegedHelperToolStatus.bash](https://github.com/erikberglund/Scripts/blob/master/Tools/checkPrivilegedHelperToolStatus.bash)
+It's available on GitHub: [checkPrivilegedHelperToolStatus.bash](https://github.com/erikberglund/Scripts/blob/master/Tools/checkPrivilegedHelperToolStatus.bash)
 
 It will inspect all binaries in **/Library/PrivilegedHelperTools** and print the following information:
 
