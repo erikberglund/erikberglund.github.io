@@ -76,7 +76,7 @@ If this topic interests you, here is a presentation from the TrueSec [Security C
 
 I've written a script to check for orphaned helper tools (currently requires OS X 10.10)
 
-It's available on GitHub: [checkPrivilegedHelperToolStatus.bash](https://github.com/erikberglund/Scripts/blob/master/Tools/checkPrivilegedHelperToolStatus.bash)
+It's available on GitHub: [checkPrivilegedHelperToolStatus](https://github.com/erikberglund/Scripts/blob/master/tools/privilegedHelperToolStatus/checkPrivilegedHelperToolStatus)
 
 It will inspect all binaries in **/Library/PrivilegedHelperTools** and print the following information:
 

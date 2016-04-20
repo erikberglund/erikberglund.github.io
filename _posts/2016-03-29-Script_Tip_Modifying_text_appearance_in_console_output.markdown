@@ -32,7 +32,7 @@ In BASH, I use a function to set up variables for the escape sequences I'm going
 
 By referencing the escape sequences by their variable names, it's easier to understand what will be printed to the screen, but also easier (and faster) to write correct code.
 
-Here is a link to my reference function containing the variables I often use: [SGR variables](https://github.com/erikberglund/Scripts/blob/master/Functions/sgr_escape_sequence_variables/function_sgr_escape_sequence_variables.function)
+Here is a link to my reference function containing the variables I often use: [SGR variables](https://github.com/erikberglund/Scripts/blob/master/functions/Bash/variables_sgr-escape-sequence/variables_sgr-escape-sequence.sh)
 
 # Color (Foreground)
 
@@ -65,7 +65,7 @@ printf "%s\n" "${red}Red${def},${grn}Green${def},${blu}Blue${clr}"
 
 Using the example from above, but this time change the text background color instead:
 
-_I have updated the **sgr_variables** function to include the new variables from my [referece](https://github.com/erikberglund/Scripts/blob/master/Functions/sgr_escape_sequence_variables/function_sgr_escape_sequence_variables.function)._
+_I have updated the **sgr_variables** function to include the new variables from my [referece](https://github.com/erikberglund/Scripts/blob/master/functions/Bash/variables_sgr-escape-sequence/variables_sgr-escape-sequence.sh)._
 
 ```bash
 # Call the function ONCE to set up the variables before using them.
@@ -94,7 +94,7 @@ Using the first example, but also adding some text attributes:
    4. Add **Underline** to <font color="blue">Blue</font>
 
 <br>
-_I have updated the **sgr_variables** function to include the new variables from my [referece](https://github.com/erikberglund/Scripts/blob/master/Functions/sgr_escape_sequence_variables/function_sgr_escape_sequence_variables.function)._
+_I have updated the **sgr_variables** function to include the new variables from my [referece](https://github.com/erikberglund/Scripts/blob/master/functions/Bash/variables_sgr-escape-sequence/variables_sgr-escape-sequence.sh)._
 
 ```bash
 # Call the function ONCE to set up the variables before using them.
