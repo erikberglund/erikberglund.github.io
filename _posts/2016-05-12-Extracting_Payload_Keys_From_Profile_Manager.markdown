@@ -1,6 +1,6 @@
 ---
 title:  "Extracting Payload Keys from Profile Manager"
-date:   2016-05-12 18:00:00
+date:   2016-05-12 17:00:00
 description: List all keys available as payload content in Profile Manager.
 ---
 

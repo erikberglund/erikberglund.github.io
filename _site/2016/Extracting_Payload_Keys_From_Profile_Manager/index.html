@@ -74,7 +74,9 @@
 
 <p>“KnobSet” is the name given to payload groups that hold payload-specific property keys for a <a href="https://developer.apple.com/library/ios/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010206-CH1-SW2">PayloadType</a>. (There are some rare exceptions).</p>
 
-<p>The variable <strong>knobSetProperties</strong> in the JavaScript source lists all available KnobSets:</p>
+<p>The variable <strong>knobSetProperties</strong> in the JavaScript source lists all available KnobSets</p>
+
+<p><em>This example command only works on versions where the knobSetProperties list doesn’t contain a newline</em></p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>sed -nE -e <span class="s1">'s/.*knobSetProperties:\[([",a-zA-Z]+)\].*/\1/p'</span> javascript-packed.js
 </code></pre>
