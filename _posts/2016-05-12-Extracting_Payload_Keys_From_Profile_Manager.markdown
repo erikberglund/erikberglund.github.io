@@ -44,7 +44,9 @@ Not only did the code expand from 1838 lines to 97302 lines, and the file size g
 
 "KnobSet" is the name given to payload groups that hold payload-specific property keys for a [PayloadType](https://developer.apple.com/library/ios/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010206-CH1-SW2). (There are some rare exceptions).
 
-The variable **knobSetProperties** in the JavaScript source lists all available KnobSets:
+The variable **knobSetProperties** in the JavaScript source lists all available KnobSets 
+
+_This example command only works on versions where the knobSetProperties list doesn't contain a newline_
 
 ```bash
 sed -nE -e 's/.*knobSetProperties:\[([",a-zA-Z]+)\].*/\1/p' javascript-packed.js
