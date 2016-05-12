@@ -1,7 +1,7 @@
 ---
 title:  "Extracting Payload Keys from Profile Manager"
 date:   2016-05-12 17:00:00
-description: List all keys available as payload content in Profile Manager.
+description: Parse Profile Manager source code to output available payload keys.
 ---
 
 I'm developing [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator), an open source configuration profile creation tool. While doing this I've been looking at ways to automatically and repeatedly create a list of all available payload keys and their configuration for use in my app.
