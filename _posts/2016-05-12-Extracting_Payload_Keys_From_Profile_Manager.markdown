@@ -264,6 +264,6 @@ It was partly successful, and I can now manually get all information I need, but
 
 Also, some strings that are returned cannot be found in the places I've looked and might be resolved in the private frameworks. 
 
-I currently need to focus on building an alpha release of the [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) application, but when that is finished, I will probably revisit this script at a later time to try and improve it further. 
+I currently need to focus on building an alpha release of the [ProfileCreator](https://github.com/ProfileCreator/ProfileCreator) application, but when that is finished, I will probably revisit this script to improve it further. 
 
 If anyone find this interesting please feel free to extend my script or use it as inspiration.
