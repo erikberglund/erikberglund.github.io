@@ -131,4 +131,4 @@ _Example output where I've installed the [AutoPkgr](https://github.com/lindegrou
 
 # Final Notes
 
-The takeaway from this post should not be a fear of orphaned helper tools, but an awareness that they don't fill any other purpose than to be possibly exploited by a future vulnerability, or by a devloper mistake and then being left on a system without means to be patched.
+The takeaway from this post should not be a fear of orphaned helper tools, but an awareness that they don't fill any other purpose than to possibly be exploited by a future vulnerability, or by a devloper mistake and then being left on a system without means to be patched.
