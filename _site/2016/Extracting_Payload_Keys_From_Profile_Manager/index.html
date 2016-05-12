@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>erikberglund.github.io - Extracting Payload Keys from Profile Manager</title>
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="/rss.xml">
+  <link rel="stylesheet" href="/assets/css/highlight.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    
+        <a href="/"> <span class="arrow">←</span> Home </a>
+    
+
+    
+        
+            <a href="/about">About </a>
+        
+    
+    <a class="cta" href="/feed.xml">Subscribe</a>
+</nav>
+
+  
+
+  <section id="wrapper" class="">
+    <article class="post">
+    <header>
+        <h1>Extracting Payload Keys from Profile Manager</h1>
+        <h2 class="headline">May 12, 2016</h2>
+    </header>
+    <section id="post-body">
+        <p>I’m developing <a href="https://github.com/ProfileCreator/ProfileCreator">ProfileCreator</a>, an open source configuration profile creation tool. While doing this I’ve been looking at ways to automatically and repeatedly create a list of all available payload keys and their configuration for use in my app.</p>
+
+<p>Apple publishes the <a href="https://developer.apple.com/library/ios/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html">Configuration Profile Key Reference</a> at their developer site, but even though it’s being updated, it doesn’t contain <u>all</u> keys and configurations.</p>
+
+<p><a href="http://www.apple.com/osx/server/features/#profile-manager">Profile Manager</a>, in being Apple’s own MDM product, is often the closest we have to a reference for OS X and iOS configuration profiles as it usually supports all new profile keys on their release. But as <a href="http://www.apple.com/osx/server/features/#profile-manager">Profile Manager</a>’s profile creation is geared towards <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/iPhoneOTAConfiguration/Introduction/Introduction.html">OTA</a> deployment of profiles it enforces keys which aren’t required if the profile is installed by other means.</p>
+
+<p><a href="https://itunes.apple.com/us/app/apple-configurator-2/id1037126344?mt=12&amp;ign-mpt=uo%3D2">Apple Configurator 2</a> is another application developed by Apple capable of creating configuration profiles (iOS only). But when you start comparing payload keys and options with <a href="http://www.apple.com/osx/server/features/#profile-manager">Profile Manager</a> you see that some payloads have slightly different configuration options.</p>
+
+<p>Neither of these applications have a reference that describe which payloads and keys they support so the only way to find that out is to create a profile, export it and inspect it’s content.</p>
+
+<h1 id="finding-the-pieces">Finding the pieces</h1>
+
+<p><a href="http://www.apple.com/osx/server/features/#profile-manager">Profile Manager</a> is a web app with it’s front end written in JavaScript and the back end in Ruby and PHP, which in turn also uses private Objective-C libraries.</p>
+
+<p><em>The information in this post comes from inspecting the Profile Manager source in Server 5.1</em></p>
+
+<p>This post will cover how to find and extract payload keys and their corresponding information from the source code instead of creating and saving profiles through it’s GUI.</p>
+
+<p>I’m also making a <a href="https://github.com/erikberglund/ProfileManagerKeyExtractor">python script</a> available that I’ve put together while researching this that is currently able to extract most of the available payload information, but <u>it's not complete</u>.</p>
+
+<p>The bulk of the payload information can be found in the front end code, so we’ll start there.</p>
+
+<h1 id="front-end">Front end</h1>
+
+<p>This is the path to the JavaScript fronted source code folder:</p>
+
+<pre><code class="language-console">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/frontend/admin/common/app
+</code></pre>
+
+<p>Within is a JavaScript file named <strong>javascript-packed.js</strong> and two CSS-files. The JavaScript file (as the name implies) is <em>packed</em> which is common for JavaScript code to save bandwidth. But this technique also obfuscates the file contents making it harder for humans to read.</p>
+
+<p>To unpack this file, I used <a href="http://www.danstools.com/javascript-beautify/">one</a> of the many JavaScript “Beautifyer/Unpackers” online which expands and tries to structure the code in a human readable format.</p>
+
+<p>Not only did the code expand from 1838 lines to 97302 lines, and the file size grew from 2965154 bytes to 4648523, it also made it possible for me to find out how the code is structured and find searchable patterns to single out payloads and their respective keys.</p>
+
+<h1 id="knobset">KnobSet</h1>
+
+<p>“KnobSet” is the name given to payload groups that hold payload-specific property keys for a <a href="https://developer.apple.com/library/ios/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html#//apple_ref/doc/uid/TP40010206-CH1-SW2">PayloadType</a>. (There are some rare exceptions).</p>
+
+<p>The variable <strong>knobSetProperties</strong> in the JavaScript source lists all available KnobSets:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sed -nE -e <span class="s1">'s/.*knobSetProperties:\[([",a-zA-Z]+)\].*/\1/p'</span> javascript-packed.js
+</code></pre>
+</div>
+<p>Pass the <em>-l</em>/<em>–list</em> flag to my <a href="https://github.com/erikberglund/ProfileManagerKeyExtractor">profileManagerKeyExtractor.py</a> script for the same list:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>./profileManagerKeyExtractor.py -l
+</code></pre>
+</div>
+
+<p>With this list we can single out the relevant parts of the code that contain payload information for the selected KnobSet and parse it to get a structured output.</p>
+
+<h1 id="gathering-the-information">Gathering the information</h1>
+
+<p>To access the payload information for a KnobSet we need the selected KnobSet object name.</p>
+
+<p><em>Example that extracts the object name for the calDavKnobSets property:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sed -nE <span class="s1">'s/.*,Admin.([a-zA-Z]+KnobSet).*profilePropertyName[=:]"calDavKnobSets".*/\1/p'</span> javascript-packed.js
+</code></pre>
+</div>
+
+<p>The payload keys available to a specific KnobSet is merged into the object using <strong>extend()</strong>.</p>
+
+<p>The <strong>CalDavKnobSet</strong> object contains information for keys, value type, default value(s) etc.</p>
+
+<p><em>Excerpt from the extend method for the CalDavKnobSet:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nx">Admin</span><span class="p">.</span><span class="nx">CalDavKnobSet</span> <span class="o">=</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSet</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="na">accountDescription</span><span class="p">:</span> <span class="nx">SC</span><span class="p">.</span><span class="nx">Record</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="nb">String</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">key</span><span class="p">:</span> <span class="s2">"CalDAVAccountDescription"</span><span class="p">,</span>
+            <span class="na">defaultValue</span><span class="p">:</span> <span class="s2">"_generic_string_My CalDAV Account"</span><span class="p">.</span><span class="nx">loc</span><span class="p">()</span>
+        <span class="p">}),</span>
+        <span class="na">hostName</span><span class="p">:</span> <span class="nx">SC</span><span class="p">.</span><span class="nx">Record</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="nb">String</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">key</span><span class="p">:</span> <span class="s2">"CalDAVHostName"</span>
+        <span class="p">}),</span>
+        <span class="na">portNumber</span><span class="p">:</span> <span class="nx">SC</span><span class="p">.</span><span class="nx">Record</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="nb">Number</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">key</span><span class="p">:</span> <span class="s2">"CalDAVPort"</span><span class="p">,</span>
+            <span class="na">defaultValue</span><span class="p">:</span> <span class="mi">8443</span>
+        <span class="p">}),</span>
+        <span class="na">principalUrl</span><span class="p">:</span> <span class="nx">SC</span><span class="p">.</span><span class="nx">Record</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="nb">String</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">key</span><span class="p">:</span> <span class="s2">"CalDAVPrincipalURL"</span>
+        <span class="p">}),</span>
+        <span class="p">...</span>
+</code></pre>
+</div>
+
+<p>The same is true for the <strong>KnobSetView</strong> object which holds key descriptions, available selections, hint strings, default values etc.</p>
+
+<p><em>Excerpt from the extend method for the CalDavKnobSetView:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nx">Admin</span><span class="p">.</span><span class="nx">CalDavKnobSetView</span> <span class="o">=</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSetView</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+        <span class="na">contentView</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSetContentView</span><span class="p">.</span><span class="nx">design</span><span class="p">({</span>
+            <span class="na">layout</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">width</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KNOB_WIDTH</span><span class="p">,</span>
+                <span class="na">centerX</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="na">height</span><span class="p">:</span> <span class="mi">420</span>
+            <span class="p">},</span>
+            <span class="na">childViews</span><span class="p">:</span> <span class="p">[</span><span class="s2">"accountDescriptionField"</span><span class="p">,</span> <span class="s2">"hostNameField"</span><span class="p">,</span> <span class="s2">"principalUrlField"</span><span class="p">,</span> <span class="s2">"usernameField"</span><span class="p">,</span> <span class="s2">"passwordField"</span><span class="p">,</span> <span class="s2">"useSslField"</span><span class="p">],</span>
+            <span class="na">accountDescriptionField</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSetTextFieldAbsolute</span><span class="p">.</span><span class="nx">design</span><span class="p">({</span>
+                <span class="na">layout</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">top</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                    <span class="na">centerX</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="na">width</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KNOB_WIDTH</span><span class="p">,</span>
+                    <span class="na">height</span><span class="p">:</span> <span class="mi">70</span>
+                <span class="p">},</span>
+                <span class="na">label</span><span class="p">:</span> <span class="s2">"_generic_string_Account Description"</span><span class="p">.</span><span class="nx">loc</span><span class="p">(),</span>
+                <span class="na">description</span><span class="p">:</span> <span class="s2">"_generic_string_The display name of the account"</span><span class="p">.</span><span class="nx">loc</span><span class="p">(),</span>
+                <span class="na">fieldHint</span><span class="p">:</span> <span class="s2">"_generic_string_optional"</span><span class="p">.</span><span class="nx">loc</span><span class="p">(),</span>
+                <span class="na">contentBinding</span><span class="p">:</span> <span class="s2">".owner.content"</span><span class="p">,</span>
+                <span class="na">fieldContentValueKey</span><span class="p">:</span> <span class="s2">"accountDescription"</span>
+            <span class="p">}),</span>
+            <span class="na">hostNameField</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSetIpPortFieldViewAbsolute</span><span class="p">.</span><span class="nx">design</span><span class="p">({</span>
+                <span class="na">layout</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="na">top</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+                    <span class="na">centerX</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="na">width</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KNOB_WIDTH</span><span class="p">,</span>
+                    <span class="na">height</span><span class="p">:</span> <span class="mi">70</span>
+                <span class="p">},</span>
+                <span class="na">label</span><span class="p">:</span> <span class="s2">"_generic_string_Account Hostname and Port"</span>
+                    <span class="p">.</span><span class="nx">loc</span><span class="p">(),</span>
+                <span class="na">description</span><span class="p">:</span> <span class="s2">"_generic_string_The CalDAV hostname or IP address and port number"</span><span class="p">.</span><span class="nx">loc</span><span class="p">(),</span>
+                <span class="na">fieldHint</span><span class="p">:</span> <span class="s2">"_hint_required"</span><span class="p">.</span><span class="nx">loc</span><span class="p">(),</span>
+                <span class="na">contentBinding</span><span class="p">:</span> <span class="s2">".owner.content"</span><span class="p">,</span>
+                <span class="na">fieldIpHostContentValueKey</span><span class="p">:</span> <span class="s2">"hostName"</span><span class="p">,</span>
+                <span class="na">fieldPortContentValueKey</span><span class="p">:</span> <span class="s2">"portNumber"</span>
+            <span class="p">}),</span>
+            <span class="p">...</span>
+</code></pre>
+</div>
+
+<p>By knowing this, and by knowing the name of the KnobSet object we’re interested in it’s possible by using regular expression to extract the method content and subsequently parse that for the specific information we seek.</p>
+
+<h1 id="localization">Localization</h1>
+
+<p>Many of the string values in the source is localized, which means that the actual string you might get from a variable could look like this:</p>
+
+<p><em>Example from the CalDAV account description:</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="s2">"_generic_string_The display name of the account"</span>.loc<span class="o">()</span>
+</code></pre>
+</div>
+
+<p>As you can see, the string ends with the method .loc(). To get the string that’s presented to the user we need to use the string we got as a variable name and extract that variable’s value from the localization file.</p>
+
+<p>For English, the localization file can be found at the following path:</p>
+
+<pre><code class="language-console">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/frontend/admin/en.lproj/\
+app/javascript_localizedStrings.js
+</code></pre>
+
+<p>Then we just get the value for the <strong>_generic_string_The display name of the account</strong> variable:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sed -nE <span class="s1">'s/"_generic_string_The display name of the account": (.*),$/\1/p'</span> javascript_localizedStrings.js
+
+<span class="s2">"The display name of the account"</span>
+</code></pre>
+</div>
+
+<p>Or, if we use the same extraction from the french localization file:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="s2">"Nom d’affichage du compte"</span>
+</code></pre>
+</div>
+
+<h1 id="back-end">Back end</h1>
+
+<p>The information in the front end code is not complete. For example the PayloadType(s), if the payload allows multiple configurations (Unique) and the Payload Name is stored in ruby model files in the back end source code.</p>
+
+<p>This is the path to the source folder for the back end ruby models:</p>
+
+<pre><code class="language-console">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/backend/app/models
+</code></pre>
+
+<p>In this folder are all KnobSets separated into their own model files, so we can use the KnobSet object name to find the file containing a class that matches it and parse that file for info:</p>
+
+<p>Example content of the <strong>cal_dav_knob_set.rb</strong> file (the file matching object <em>CalDavKnobSet</em>):</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CalDavKnobSet</span> <span class="o">&lt;</span> <span class="no">KnobSet</span>
+
+  <span class="vc">@@payload_type</span>          <span class="o">=</span> <span class="s2">"com.apple.caldav.account"</span>
+  <span class="vc">@@payload_subidentifier</span> <span class="o">=</span> <span class="s2">"caldav"</span>
+  <span class="vc">@@is_unique</span>             <span class="o">=</span> <span class="kp">false</span>
+  <span class="vc">@@payload_name</span>          <span class="o">=</span> <span class="s2">"CalDAV"</span>
+</code></pre>
+</div>
+
+<h1 id="putting-it-together">Putting it together</h1>
+
+<p>With this knowledge, it’s possible to parse the source to extract the payload information.</p>
+
+<p>This is the current output from my <a href="https://github.com/erikberglund/ProfileManagerKeyExtractor">script</a> if you request the information for the calDavKnobSet:</p>
+
+<pre><code class="language-console">$ ./profileManagerKeyExtractor.py -k calDavKnobSets
+
+    Payload Name: CalDAV
+    Payload Type: com.apple.caldav.account
+          Unique: NO
+       UserLevel: YES
+     SystemLevel: NO
+       Platforms: iOS,OSX
+
+      PayloadKey: CalDAVAccountDescription
+           Title: Account Description
+     Description: The display name of the account
+            Type: String
+     Hint String: optional
+    DefaultValue: My Calendar Account
+
+      PayloadKey: CalDAVHostName
+           Title: Account Hostname and Port
+     Description: The CalDAV hostname or IP address and port number
+            Type: String
+
+      PayloadKey: CalDAVPort
+           Title:
+     Description:
+            Type: Number
+    DefaultValue: 8443
+
+      PayloadKey: CalDAVPrincipalURL
+           Title: Principal URL
+     Description: The Principal URL for the CalDAV account
+            Type: String
+
+      PayloadKey: CalDAVUsername
+           Title: Account User name
+     Description: The CalDAV user name
+            Type: String
+     Hint String: Required (OTA)
+                  Set on device (Manual)
+
+      PayloadKey: CalDAVPassword
+           Title: Account Password
+     Description: The CalDAV password
+            Type: String
+     Hint String: Optional (OTA)
+                  Set on device (Manual)
+
+      PayloadKey: CalDAVUseSSL
+           Title: Use SSL
+     Description: Enable Secure Socket Layer communication with CalDAV server
+            Type: Boolean
+    DefaultValue: YES
+</code></pre>
+
+<h1 id="final-notes">Final Notes</h1>
+
+<p>The method of parsing source code is of course <strong>never</strong> a good idea as any release might break the parsing. This was just a break from my work on <a href="https://github.com/ProfileCreator/ProfileCreator">ProfileCreator</a> to see if it would be possible to create a tool that could be used to run on each <a href="http://www.apple.com/osx/server/features/#profile-manager">Profile Manager</a> release and create a diff of what’s changed so new additions would be easy to keep track of.</p>
+
+<p>It was partly successful, and I can now manually get all information I need, but the script currently doesn’t handle arrays or dicts as that would require some complex parsing logic.</p>
+
+<p>Also, some strings that are returned cannot be found in the places I’ve looked and might be resolved in the private frameworks.</p>
+
+<p>I currently need to focus on building an alpha release of the <a href="https://github.com/ProfileCreator/ProfileCreator">ProfileCreator</a> application, but when that is finished, I will probably revisit this script at a later time to try and improve it further.</p>
+
+<p>If anyone find this interesting please feel free to extend my script or use it as inspiration.</p>
+
+    </section>
+</article>
+<footer id="post-meta" class="clearfix">
+    <a href="http://twitter.com/ekkrik">
+        <img class="avatar" src="/assets/images/avatar.png">
+        <div>
+            <span class="dark">Erik Berglund</span>
+            <span>Adventures in Code</span>
+        </div>
+    </a>
+
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://erikberglund.github.io/2016/Extracting_Payload_Keys_From_Profile_Manager/ - Extracting Payload Keys from Profile Manager by @ekkrik"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+    </section>
+</footer>
+
+<!-- Disqus comments -->
+
+
+<!-- Archive post list -->
+
+
+
+
+
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75593310-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
+
+
+
