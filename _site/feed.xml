@@ -7,6 +7,19 @@
     <atom:link href="http://erikberglund.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Get BSDP Server IP from a NetBoot client</title>
+        
+        
+          <description>&lt;p&gt;A question on the &lt;a href=&quot;https://macadmins.slack.com/archives/imagr/p1476426586000654&quot;&gt;MacAdmins Slack&lt;/a&gt; got me to investigate how a NetBoot client can get the IP of the BSDP server it’s booted from.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 14 Aug 2016 18:00:00 +0200</pubDate>
+        <link>http://erikberglund.github.io/2016/Get-BSDP-Server-IP-from-a-NetBoot-client/</link>
+        <guid isPermaLink="true">http://erikberglund.github.io/2016/Get-BSDP-Server-IP-from-a-NetBoot-client/</guid>
+      </item>
+    
+      <item>
         <title>Extracting Payload Keys from Profile Manager</title>
         
         
