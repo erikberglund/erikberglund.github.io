@@ -3,8 +3,8 @@
   <channel>
     <title>erikberglund.github.io</title>
     <description>Adventures in Code</description>
-    <link>http://erikberglund.github.io</link>
-    <atom:link href="http://erikberglund.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <link>http://localhost:4000</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
         <title>Configuration Profile Reference Changelog</title>
@@ -15,8 +15,8 @@
 </description>
         
         <pubDate>Wed, 25 Apr 2018 22:00:00 +0200</pubDate>
-        <link>http://erikberglund.github.io/2018/Configuration_Profile_Reference_Changelog/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2018/Configuration_Profile_Reference_Changelog/</guid>
+        <link>http://localhost:4000/2018/Configuration_Profile_Reference_Changelog/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/Configuration_Profile_Reference_Changelog/</guid>
       </item>
     
       <item>
@@ -28,8 +28,8 @@
 </description>
         
         <pubDate>Sun, 14 Aug 2016 18:00:00 +0200</pubDate>
-        <link>http://erikberglund.github.io/2016/Get-BSDP-Server-IP-from-a-NetBoot-client/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/Get-BSDP-Server-IP-from-a-NetBoot-client/</guid>
+        <link>http://localhost:4000/2016/Get-BSDP-Server-IP-from-a-NetBoot-client/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/Get-BSDP-Server-IP-from-a-NetBoot-client/</guid>
       </item>
     
       <item>
@@ -41,8 +41,8 @@
 </description>
         
         <pubDate>Thu, 12 May 2016 19:00:00 +0200</pubDate>
-        <link>http://erikberglund.github.io/2016/Extracting_Payload_Keys_From_Profile_Manager/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/Extracting_Payload_Keys_From_Profile_Manager/</guid>
+        <link>http://localhost:4000/2016/Extracting_Payload_Keys_From_Profile_Manager/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/Extracting_Payload_Keys_From_Profile_Manager/</guid>
       </item>
     
       <item>
@@ -54,8 +54,8 @@
 </description>
         
         <pubDate>Wed, 30 Mar 2016 22:00:00 +0200</pubDate>
-        <link>http://erikberglund.github.io/2016/No_Privileged_Helper_Tool_Left_Behind/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/No_Privileged_Helper_Tool_Left_Behind/</guid>
+        <link>http://localhost:4000/2016/No_Privileged_Helper_Tool_Left_Behind/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/No_Privileged_Helper_Tool_Left_Behind/</guid>
       </item>
     
       <item>
@@ -67,8 +67,8 @@
 </description>
         
         <pubDate>Tue, 29 Mar 2016 22:00:00 +0200</pubDate>
-        <link>http://erikberglund.github.io/2016/Script_Tip_Modifying_text_appearance_in_console_output/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/Script_Tip_Modifying_text_appearance_in_console_output/</guid>
+        <link>http://localhost:4000/2016/Script_Tip_Modifying_text_appearance_in_console_output/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/Script_Tip_Modifying_text_appearance_in_console_output/</guid>
       </item>
     
       <item>
@@ -80,8 +80,8 @@
 </description>
         
         <pubDate>Mon, 28 Mar 2016 22:00:00 +0200</pubDate>
-        <link>http://erikberglund.github.io/2016/Script_Tip_Split_line_into_variables/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/Script_Tip_Split_line_into_variables/</guid>
+        <link>http://localhost:4000/2016/Script_Tip_Split_line_into_variables/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/Script_Tip_Split_line_into_variables/</guid>
       </item>
     
       <item>
@@ -93,8 +93,8 @@
 </description>
         
         <pubDate>Wed, 23 Mar 2016 21:00:00 +0100</pubDate>
-        <link>http://erikberglund.github.io/2016/App_Store_Adoption_Eligibility_Query/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/App_Store_Adoption_Eligibility_Query/</guid>
+        <link>http://localhost:4000/2016/App_Store_Adoption_Eligibility_Query/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/App_Store_Adoption_Eligibility_Query/</guid>
       </item>
     
       <item>
@@ -106,8 +106,8 @@
 </description>
         
         <pubDate>Sun, 20 Mar 2016 12:00:00 +0100</pubDate>
-        <link>http://erikberglund.github.io/2016/Apple_Product_Marketing_Name_Query/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/Apple_Product_Marketing_Name_Query/</guid>
+        <link>http://localhost:4000/2016/Apple_Product_Marketing_Name_Query/</link>
+        <guid isPermaLink="true">http://localhost:4000/2016/Apple_Product_Marketing_Name_Query/</guid>
       </item>
     
   </channel>

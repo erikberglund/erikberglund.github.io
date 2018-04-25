@@ -49,16 +49,16 @@
 
 <p>The only accessable NetBoot variables I could find were from looking in <strong>/etc/rc.netboot</strong>.</p>
 
-<pre><code class="language-console">ipconfig netbootoption shadow_mount_path
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">ipconfig netbootoption shadow_mount_path
 ipconfig netbootoption shadow_file_path
 ipconfig netbootoption machine_name
-</code></pre>
+</span></code></pre></div></div>
 
 <p>The option <strong>netbootoption</strong> is not included in the <a href="x-man-page://8/ipconfig">man page</a> or usage output for ipconfig, but running it without any options returns a usage message:</p>
 
-<pre><code class="language-console">$ ipconfig netbootoption
-usage: ipconfig netbootoption &lt;option&gt; [&lt;vendor option&gt;] | shadow_mount_path | shadow_file_path | machine_name
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> ipconfig netbootoption
+<span class="gp">usage: ipconfig netbootoption &lt;option&gt;</span> <span class="o">[</span>&lt;vendor option&gt;] | shadow_mount_path | shadow_file_path | machine_name
+</code></pre></div></div>
 
 <p>There is a <strong>&lt;vendor option&gt;</strong> which should print the value of DHCP vendor options.</p>
 
@@ -120,46 +120,46 @@ usage: ipconfig netbootoption &lt;option&gt; [&lt;vendor option&gt;] | shadow_mo
 
 <p>And, when testing these options on my NetBoot client, I got the result I was looking for:</p>
 
-<pre><code class="language-console">$ ipconfig netbootoption 17
-http://10.2.0.10/NetBoot/NetBootSP0/10.12-16A323_Imagr.nbi/NetInstall.dmg
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> ipconfig netbootoption 17
+<span class="go">http://10.2.0.10/NetBoot/NetBootSP0/10.12-16A323_Imagr.nbi/NetInstall.dmg
 
-$ ipconfig netbootoption 43
-0000  01 01 02 08 04 81 00 09  29 82 0a 4e 65 74 42 6f  ........)..NetBo
+</span><span class="gp">$</span> ipconfig netbootoption 43
+<span class="go">0000  01 01 02 08 04 81 00 09  29 82 0a 4e 65 74 42 6f  ........)..NetBo
 0010  6f 74 30 30 33                                    ot003 
 
-$ ipconfig netbootoption 53
-0x5
+</span><span class="gp">$</span> ipconfig netbootoption 53
+<span class="go">0x5
 
-$ ipconfig netbootoption 54
-10.2.0.1
+</span><span class="gp">$</span> ipconfig netbootoption 54
+<span class="go">10.2.0.1
 
-$ ipconfig netbootoption 60
-AAPLBSDPC
+</span><span class="gp">$</span> ipconfig netbootoption 60
+<span class="go">AAPLBSDPC
 
-$ ipconfig netbootoption 66
+</span><span class="gp">$</span> ipconfig netbootoption 66
+<span class="go">
 
-
-$ ipconfig netbootoption 67
-
-</code></pre>
+</span><span class="gp">$</span> ipconfig netbootoption 67
+<span class="go">
+</span></code></pre></div></div>
 
 <h1 id="bsdp-server-ip">BSDP Server IP</h1>
 
 <p>To get the BSDP server IP from a NetBoot client, extract the IP from root path:</p>
 
-<pre><code class="language-console">ipconfig netbootoption 17 | awk -F'/' '{ print $3 }'
-10.2.0.10
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">ipconfig netbootoption 17 | awk -F'/' '{ print $</span>3 <span class="o">}</span><span class="s1">'
+</span><span class="go">10.2.0.10
+</span></code></pre></div></div>
 
 <h1 id="alternative-method">Alternative Method</h1>
 
 <p>Because the client is booted from a remote disk image, you can also get the path from <a href="x-man-page://1/hdiutil">hdiutil</a>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Get device id for the boot volume ( example: /dev/disk1s1 )</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Get device id for the boot volume ( example: /dev/disk1s1 )</span>
 <span class="nv">boot_device_id</span><span class="o">=</span><span class="k">$(</span> diskutil info / | awk <span class="s1">'/Device Node:/ { print $NF }'</span> <span class="k">)</span>
 
 <span class="c"># Get path for the disk image mounted at "${boot_device_id}"</span>
-<span class="nv">boot_disk_image_path</span><span class="o">=</span><span class="k">$(</span> hdiutil info | awk -v <span class="nv">device_id</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">boot_device_id</span><span class="k">}</span><span class="s2">"</span> <span class="s1">'{ 
+<span class="nv">boot_disk_image_path</span><span class="o">=</span><span class="k">$(</span> hdiutil info | awk <span class="nt">-v</span> <span class="nv">device_id</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">boot_device_id</span><span class="k">}</span><span class="s2">"</span> <span class="s1">'{ 
                         if ( $1 == "image-path" ) { 
                             disk_image_path=$NF;
                         } else if ( $1 == device_id ) { 
@@ -167,10 +167,9 @@ $ ipconfig netbootoption 67
                         } }'</span> <span class="k">)</span>
 
 <span class="c"># Print the IP for the BSDP Server</span>
-awk -F<span class="s1">'/'</span> <span class="s1">'{ print $3 }'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">boot_disk_image_path</span><span class="k">}</span><span class="s2">"</span>
+awk <span class="nt">-F</span><span class="s1">'/'</span> <span class="s1">'{ print $3 }'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">boot_disk_image_path</span><span class="k">}</span><span class="s2">"</span>
 10.2.0.10
-</code></pre>
-</div>
+</code></pre></div></div>
 
     </section>
 </article>

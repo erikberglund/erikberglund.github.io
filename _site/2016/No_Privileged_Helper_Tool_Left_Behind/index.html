@@ -58,17 +58,17 @@
 
 <p><em>Example prompt shown to the user when requesting to install the <a href="https://github.com/lindegroup/autopkgr">AutoPkgr</a> helper tool:</em></p>
 
-<p><img src="http://erikberglund.github.io/assets/screenshots/SMJobBlessInstallPrompt.png" alt="SMJobBlessInstallPrompt" /></p>
+<p><img src="http://localhost:4000/assets/screenshots/SMJobBlessInstallPrompt.png" alt="SMJobBlessInstallPrompt" /></p>
 
 <p>If the user authenticates, a <a href="x-man-page://5/launchd.plist">launchd job</a> is configured and copied here:</p>
 
-<pre><code class="language-console">/Library/LaunchDaemons/
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">/Library/LaunchDaemons/
+</span></code></pre></div></div>
 
 <p>The privileged helper tool binary is then copied from the main application bundle to:</p>
 
-<pre><code class="language-console">/Library/PrivilegedHelperTools/
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">/Library/PrivilegedHelperTools/
+</span></code></pre></div></div>
 
 <p>The job is then registered and activated by <a href="x-man-page://8/launchd">launchd</a>.</p>
 
@@ -133,7 +133,7 @@
 
 <p><em>Example output where I’ve installed the <a href="https://github.com/lindegroup/autopkgr">AutoPkgr</a> helper tool, then removed the application:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>        [Helper]
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        [Helper]
            Path: /Library/PrivilegedHelperTools/com.lindegroup.AutoPkgr.helper
                  
                  BundleID: com.lindegroup.AutoPkgr.helper
@@ -164,8 +164,7 @@
                  |                                                      |
                  |               IT  MIGHT BE LEFT BEHIND               |
                  +------------------------------------------------------+
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h1 id="final-notes">Final Notes</h1>
 

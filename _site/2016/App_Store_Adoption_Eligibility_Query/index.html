@@ -58,14 +58,14 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>The server response is written to this file:</p>
 
-<pre><code class="language-console">/Library/Application Support/App Store/adoption.plist
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">/Library/Application Support/App Store/adoption.plist
+</span></code></pre></div></div>
 
 <p>If all applications have been adopted, the file will contain an error dict with the error key:</p>
 
 <p><strong>MZFinance.AppAdoptionNotEligible</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
 <span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;dict&gt;</span>
@@ -86,12 +86,11 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
     <span class="nt">&lt;date&gt;</span>2016-03-23T20:00:00Z<span class="nt">&lt;/date&gt;</span>
 <span class="nt">&lt;/dict&gt;</span>
 <span class="nt">&lt;/plist&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>If one or more applications are available for adoption, an array of application bundle ID:s eligble for adoption will be returned instead.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
 <span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
 <span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;dict&gt;</span>
@@ -118,8 +117,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
     <span class="nt">&lt;date&gt;</span>2016-03-23T20:00:00Z<span class="nt">&lt;/date&gt;</span>
 <span class="nt">&lt;/dict&gt;</span>
 <span class="nt">&lt;/plist&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>So, to see the adoption status of a running computer, you only have to look in this file.</p>
 
@@ -133,22 +131,22 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>By enabling xml debug logging for the Mac App Store using the following <a href="x-man-page://1/defaults"><strong>defaults</strong></a> command:</p>
 
-<pre><code class="language-console">defaults write com.apple.commerce LogXML true
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">defaults write com.apple.commerce LogXML true
+</span></code></pre></div></div>
 
 <p>We can see that it’s the <code class="highlighter-rouge">storeassetd</code> binary that requests this information, and in fact, log it’s queries in the following location:</p>
 
-<pre><code class="language-console">~/Library/Logs/storeassetd
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">~/Library/Logs/storeassetd
+</span></code></pre></div></div>
 
 <p>Look for files named <strong><em>date</em> (Request).plist</strong> and inspect their content. We’re looking for requests that have the URL key set to an URL looking like this:</p>
 
-<pre><code class="language-console">https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/adoptionEligibilitySrv?guid=A45E60******
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/adoptionEligibilitySrv?guid=A45E60******
+</span></code></pre></div></div>
 
 <p>In this file, we can see (in the <strong>httpBody</strong> key) that the request data is a plist with four keys:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dict&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dict&gt;</span>
     <span class="nt">&lt;key&gt;</span>guid<span class="nt">&lt;/key&gt;</span>
     <span class="nt">&lt;string&gt;</span>A45E60******<span class="nt">&lt;/string&gt;</span>
     <span class="nt">&lt;key&gt;</span>response-content-type<span class="nt">&lt;/key&gt;</span>
@@ -158,8 +156,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
     <span class="nt">&lt;key&gt;</span>serial-no<span class="nt">&lt;/key&gt;</span>
     <span class="nt">&lt;string&gt;</span>C0252******GF2C1H<span class="nt">&lt;/string&gt;</span>
 <span class="nt">&lt;/dict&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="guid">guid</h3>
 
@@ -167,14 +164,13 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>You can use this command to print the MAC address for interface <strong>en0</strong> in the correct format:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ifconfig en0 | awk <span class="s1">'/ether/{ gsub(":",""); print toupper($2)}'</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ifconfig en0 | awk <span class="s1">'/ether/{ gsub(":",""); print toupper($2)}'</span>
+</code></pre></div></div>
 
 <p><em>Output:</em></p>
 
-<pre><code class="language-console">A45E60******
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">A45E60******
+</span></code></pre></div></div>
 
 <h3 id="response-content-type">response-content-type</h3>
 
@@ -186,14 +182,13 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>This value is stored in nvram and by knowing it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB</strong>) we can use the <a href="x-man-page://8/nvram"><strong>nvram</strong></a> command to retrieve the serial number:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk <span class="s1">'{ print $NF }'</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk <span class="s1">'{ print $NF }'</span>
+</code></pre></div></div>
 
 <p><em>Output:</em></p>
 
-<pre><code class="language-console">C0252******GF2C1H
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">C0252******GF2C1H
+</span></code></pre></div></div>
 
 <h3 id="rom-addr">rom-addr</h3>
 
@@ -201,45 +196,43 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>This value is also stored in nvram, and by using it’s address (<strong>4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM</strong>) we can retrieve the rom-addr using the <a href="x-man-page://8/nvram"><strong>nvram</strong></a> command as well:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>nvram -x 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk <span class="s1">'{ gsub(/\%/, ""); print $NF }'</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvram <span class="nt">-x</span> 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk <span class="s1">'{ gsub(/\%/, ""); print $NF }'</span>
+</code></pre></div></div>
 
 <p><em>Output:</em></p>
 
-<pre><code class="language-console">0cbc9f******
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">0cbc9f******
+</span></code></pre></div></div>
 
 <h1 id="query-without-the-mac-app-store">Query without the Mac App Store</h1>
 
 <p>Now that we know how to retrieve the required values, we can send a query to the Apple servers for the adoption status of the running system (must be saved as a bash script to run):</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 
 <span class="nv">guid</span><span class="o">=</span><span class="k">$(</span>ifconfig en0 | awk <span class="s1">'/ether/{ gsub(":",""); print toupper($2)}'</span><span class="k">)</span>
 
-<span class="nb">read</span> -r -d <span class="s1">''</span> data_plist <span class="sh">&lt;&lt;-EOF
+<span class="nb">read</span> <span class="nt">-r</span> <span class="nt">-d</span> <span class="s1">''</span> data_plist <span class="o">&lt;&lt;-</span><span class="no">EOF</span><span class="sh">
 	&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 	&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
 	&lt;plist version="1.0"&gt;
 	&lt;dict&gt;
 		&lt;key&gt;guid&lt;/key&gt;
-		&lt;string&gt;${guid}&lt;/string&gt;
+		&lt;string&gt;</span><span class="k">${</span><span class="nv">guid</span><span class="k">}</span><span class="sh">&lt;/string&gt;
 		&lt;key&gt;response-content-type&lt;/key&gt;
 		&lt;string&gt;text/xml&lt;/string&gt;
 		&lt;key&gt;rom-addr&lt;/key&gt;
-		&lt;string&gt;$(nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk '{ gsub(/\%/, ""); print $NF }')&lt;/string&gt;
+		&lt;string&gt;</span><span class="k">$(</span>nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:ROM | awk <span class="s1">'{ gsub(/\%/, ""); print $NF }'</span><span class="k">)</span><span class="sh">&lt;/string&gt;
 		&lt;key&gt;serial-no&lt;/key&gt;
-		&lt;string&gt;$(nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk '{ print $NF }')&lt;/string&gt;
+		&lt;string&gt;</span><span class="k">$(</span>nvram 4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14:MLB | awk <span class="s1">'{ print $NF }'</span><span class="k">)</span><span class="sh">&lt;/string&gt;
 	&lt;/dict&gt;
 	&lt;/plist&gt;
-	EOF
+</span><span class="no">	EOF
 
-</span>curl -H <span class="s2">"X-Apple-Store-Front: 143441-1,12"</span> --data <span class="s2">"</span><span class="k">${</span><span class="nv">data_plist</span><span class="k">}</span><span class="s2">"</span> https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/adoptionEligibilitySrv?guid<span class="o">=</span><span class="k">${</span><span class="nv">guid</span><span class="k">}</span>
+</span>curl <span class="nt">-H</span> <span class="s2">"X-Apple-Store-Front: 143441-1,12"</span> <span class="nt">--data</span> <span class="s2">"</span><span class="k">${</span><span class="nv">data_plist</span><span class="k">}</span><span class="s2">"</span> https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/adoptionEligibilitySrv?guid<span class="o">=</span><span class="k">${</span><span class="nv">guid</span><span class="k">}</span>
 
 <span class="nb">exit </span>0
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This will return the same property list as the one written to adoption.plist</p>
 
@@ -263,7 +256,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p><em>Example response when all applications have been adopted:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
 <span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
 <span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;dict&gt;</span>
@@ -279,8 +272,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
     <span class="nt">&lt;string&gt;</span>ex.name (com.apple.jingle.foundation.exceptions.MZCodedException) -- ex.message (MZException code = MZFinance.AppAdoptionNotEligible, userInfo = null)<span class="nt">&lt;/string&gt;</span>
     <span class="nt">&lt;/dict&gt;</span>
 <span class="nt">&lt;/plist&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="adoption-response">Adoption Response:</h3>
 
@@ -288,7 +280,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p><em>Example response when multiple applications are available for adoption:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span>
 <span class="cp">&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</span>
 <span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">"1.0"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;dict&gt;</span>
@@ -354,8 +346,7 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
     <span class="nt">&lt;date&gt;</span>2016-03-23T20:00:00Z<span class="nt">&lt;/date&gt;</span>
 <span class="nt">&lt;/dict&gt;</span>
 <span class="nt">&lt;/plist&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h1 id="final-notes">Final Notes</h1>
 
@@ -363,8 +354,8 @@ To update them, the user has to “adopt” the applications using an Apple ID. 
 
 <p>One action might be to populate the <strong>.MASManifest</strong> file at the path shown below with the array from a positive response to have the applications show up in the Mac App Store as available for adoption on the imaged Mac.</p>
 
-<pre><code class="language-console">/var/db/.MASManifest
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">/var/db/.MASManifest
+</span></code></pre></div></div>
 
 <p>Another might be to show a warning if a computer is expected to have all application adoptions remaining (in the case of demo units for example).</p>
 

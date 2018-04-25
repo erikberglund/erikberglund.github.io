@@ -45,26 +45,23 @@
 
 <p>Example using os version: <strong>10.11.4</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?edid<span class="o">=</span>10.11.4
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> http://support-sp.apple.com/sp/product?edid<span class="o">=</span>10.11.4
+</code></pre></div></div>
 
 <p><em>Response:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
 <span class="nt">&lt;root&gt;</span>
     <span class="nt">&lt;name&gt;</span>CPU Name<span class="nt">&lt;/name&gt;</span>
     <span class="nt">&lt;configCode&gt;</span>OS X El Capitan<span class="nt">&lt;/configCode&gt;</span>
     <span class="nt">&lt;locale&gt;</span>en_US<span class="nt">&lt;/locale&gt;</span>
 <span class="nt">&lt;/root&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>To get the marketing name of a running os, you can use <a href="x-man-page://1/sw_vers"><strong>sw_vers</strong></a> to fill the query value:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?edid<span class="o">=</span><span class="k">$(</span> sw_vers -productVersion <span class="k">)</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> http://support-sp.apple.com/sp/product?edid<span class="o">=</span><span class="k">$(</span> sw_vers <span class="nt">-productVersion</span> <span class="k">)</span>
+</code></pre></div></div>
 
 <h1 id="hardware-marketing-name">Hardware marketing name</h1>
 
@@ -78,86 +75,77 @@
 
 <p>Example using a Mac serial number: <strong>C02PRAR2G8WP</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?cc<span class="o">=</span>G8WP
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> http://support-sp.apple.com/sp/product?cc<span class="o">=</span>G8WP
+</code></pre></div></div>
 
 <p><em>Response:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
 <span class="nt">&lt;root&gt;</span>
     <span class="nt">&lt;name&gt;</span>CPU Name<span class="nt">&lt;/name&gt;</span>
     <span class="nt">&lt;configCode&gt;</span>MacBook Pro (Retina, 15-inch, Mid 2015)<span class="nt">&lt;/configCode&gt;</span>
     <span class="nt">&lt;locale&gt;</span>en_US<span class="nt">&lt;/locale&gt;</span>
 <span class="nt">&lt;/root&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Example using an Airport Express serial number: <strong>F12HQHPADV2R</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?cc<span class="o">=</span>DV2R
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> http://support-sp.apple.com/sp/product?cc<span class="o">=</span>DV2R
+</code></pre></div></div>
 
 <p><em>Response:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
 <span class="nt">&lt;root&gt;</span>
     <span class="nt">&lt;name&gt;</span>CPU Name<span class="nt">&lt;/name&gt;</span>
     <span class="nt">&lt;configCode&gt;</span>AirPort Express 802.11n (2nd Generation)<span class="nt">&lt;/configCode&gt;</span>
     <span class="nt">&lt;locale&gt;</span>en_US<span class="nt">&lt;/locale&gt;</span>
 <span class="nt">&lt;/root&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>To get the marketing name of a running computer, you can use <a href="x-man-page://8/ioreg"><strong>ioreg</strong></a> to fill the query value:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?cc<span class="o">=</span><span class="k">$(</span> ioreg -c IOPlatformExpertDevice -d 2 | awk -F<span class="se">\"</span> <span class="s1">'/IOPlatformSerialNumber/{ sn=$(NF-1); if (length(sn) == 12) count=3; else if (length(sn) == 11) count=2; print substr(sn, length(sn) - count, length(sn))}'</span> <span class="k">)</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> http://support-sp.apple.com/sp/product?cc<span class="o">=</span><span class="k">$(</span> ioreg <span class="nt">-c</span> IOPlatformExpertDevice <span class="nt">-d</span> 2 | awk <span class="nt">-F</span><span class="se">\"</span> <span class="s1">'/IOPlatformSerialNumber/{ sn=$(NF-1); if (length(sn) == 12) count=3; else if (length(sn) == 11) count=2; print substr(sn, length(sn) - count, length(sn))}'</span> <span class="k">)</span>
+</code></pre></div></div>
 
 <p>I use <a href="x-man-page://1/awk"><strong>awk</strong></a> to print the x last characters depending on the serial number length.</p>
 
 <p>Here is a version of the <a href="x-man-page://1/awk"><strong>awk</strong></a> program used in its own on the Airport Express serial number:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>awk <span class="s1">'{ if (length($0) == 12) count=3; else if (length($0) == 11) count=2; print substr($0, length($0) - count, length($0))}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"F12HQHPADV2R"</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>awk <span class="s1">'{ if (length($0) == 12) count=3; else if (length($0) == 11) count=2; print substr($0, length($0) - count, length($0))}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"F12HQHPADV2R"</span>
+</code></pre></div></div>
 
 <p><em>Output:</em></p>
 
-<pre><code class="language-console">DV2R
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">DV2R
+</span></code></pre></div></div>
 
 <h1 id="cleaning-output">Cleaning output</h1>
 
 <p>If you only want the marketing name as output, you can use the following <a href="x-man-page://3/XML::XPath"><strong>xpath</strong></a> query to print the <em>configCode</em> node content from the response:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="s1">'/root/configCode/text()'</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'/root/configCode/text()'</span>
+</code></pre></div></div>
 
 <p><strong>OS X marketing name example:</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?edid<span class="o">=</span><span class="k">$(</span> sw_vers -productVersion <span class="k">)</span> | xpath <span class="s1">'/root/configCode/text()'</span> 2&gt;/dev/null
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> http://support-sp.apple.com/sp/product?edid<span class="o">=</span><span class="k">$(</span> sw_vers <span class="nt">-productVersion</span> <span class="k">)</span> | xpath <span class="s1">'/root/configCode/text()'</span> 2&gt;/dev/null
+</code></pre></div></div>
 
 <p><em>Output:</em></p>
 
-<pre><code class="language-console">OS X El Capitan
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">OS X El Capitan
+</span></code></pre></div></div>
 
 <p><strong>Hardware product marketing name example:</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl -s http://support-sp.apple.com/sp/product?cc<span class="o">=</span><span class="k">$(</span> ioreg -c IOPlatformExpertDevice -d 2 | awk -F<span class="se">\"</span> <span class="s1">'/IOPlatformSerialNumber/{ sn=$(NF-1); if (length(sn) == 12) count=3; else if (length(sn) == 11) count=2; print substr(sn, length(sn) - count, length(sn))}'</span> <span class="k">)</span> | xpath <span class="s1">'/root/configCode/text()'</span> 2&gt;/dev/null
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-s</span> http://support-sp.apple.com/sp/product?cc<span class="o">=</span><span class="k">$(</span> ioreg <span class="nt">-c</span> IOPlatformExpertDevice <span class="nt">-d</span> 2 | awk <span class="nt">-F</span><span class="se">\"</span> <span class="s1">'/IOPlatformSerialNumber/{ sn=$(NF-1); if (length(sn) == 12) count=3; else if (length(sn) == 11) count=2; print substr(sn, length(sn) - count, length(sn))}'</span> <span class="k">)</span> | xpath <span class="s1">'/root/configCode/text()'</span> 2&gt;/dev/null
+</code></pre></div></div>
 
 <p><em>Output:</em></p>
 
-<pre><code class="language-console">MacBook Pro (Retina, 15-inch, Mid 2015)
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">MacBook Pro (Retina, 15-inch, Mid 2015)
+</span></code></pre></div></div>
 
 <p><em>NOTE: xpath doesn’t add a newline at the end of the output.</em></p>
 

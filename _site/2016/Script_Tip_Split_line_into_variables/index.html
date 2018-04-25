@@ -41,28 +41,25 @@
 
 <p>On OS X, <strong>/usr/bin/sw_vers -productVersion</strong> will output the current computer’s OS version:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ /usr/bin/sw_vers -productVersion
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ /usr/bin/sw_vers -productVersion
 10.11.4
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>When assign the components from the version string into separate variables I often see this:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">major</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="k">)</span>
-<span class="nv">minor</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $2}'</span> <span class="k">)</span>
-<span class="nv">patch</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $3}'</span> <span class="k">)</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">major</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> | awk <span class="nt">-F</span><span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="k">)</span>
+<span class="nv">minor</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> | awk <span class="nt">-F</span><span class="s1">'.'</span> <span class="s1">'{print $2}'</span> <span class="k">)</span>
+<span class="nv">patch</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> | awk <span class="nt">-F</span><span class="s1">'.'</span> <span class="s1">'{print $3}'</span> <span class="k">)</span>
+</code></pre></div></div>
 
 <p>This works fine, but calls <a href="x-man-page://1/sw_vers"><strong>sw_vers</strong></a> and <a href="x-man-page://1/awk"><strong>awk</strong></a> three times to parse the same string into variables.</p>
 
 <p>We could remove the repeated calls to <a href="x-man-page://1/sw_vers"><strong>sw_vers</strong></a> by assigning it’s output to a variable and then use that variable as input to the <a href="x-man-page://1/awk"><strong>awk</strong></a> commands:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">version</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers -productVersion <span class="k">)</span>
-<span class="nv">major</span><span class="o">=</span><span class="k">$(</span> awk -F<span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
-<span class="nv">minor</span><span class="o">=</span><span class="k">$(</span> awk -F<span class="s1">'.'</span> <span class="s1">'{print $2}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
-<span class="nv">patch</span><span class="o">=</span><span class="k">$(</span> awk -F<span class="s1">'.'</span> <span class="s1">'{print $3}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">version</span><span class="o">=</span><span class="k">$(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> <span class="k">)</span>
+<span class="nv">major</span><span class="o">=</span><span class="k">$(</span> awk <span class="nt">-F</span><span class="s1">'.'</span> <span class="s1">'{print $1}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
+<span class="nv">minor</span><span class="o">=</span><span class="k">$(</span> awk <span class="nt">-F</span><span class="s1">'.'</span> <span class="s1">'{print $2}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
+<span class="nv">patch</span><span class="o">=</span><span class="k">$(</span> awk <span class="nt">-F</span><span class="s1">'.'</span> <span class="s1">'{print $3}'</span> <span class="o">&lt;&lt;&lt;</span> <span class="s2">"</span><span class="k">${</span><span class="nv">version</span><span class="k">}</span><span class="s2">"</span> <span class="k">)</span>
+</code></pre></div></div>
 
 <p>Better, but still executes <a href="x-man-page://1/awk"><strong>awk</strong></a> three times in order to parse the string and assign the variables.</p>
 
@@ -72,29 +69,25 @@
 
 <p>This is what the same variable assignment looks like when using <strong>read</strong>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor patch &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> <span class="nt">-r</span> major minor patch &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> <span class="o">)</span>
+</code></pre></div></div>
 
 <p><strong>Command explained:</strong></p>
 
 <p>I start by defining the separator I want to use to split the input string:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>IFS='.'
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IFS='.'
+</code></pre></div></div>
 
 <p>Then, I call the <strong>read</strong> command followed by the variable names I want to assign each value to:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>read -r major minor patch
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>read -r major minor patch
+</code></pre></div></div>
 
 <p>I use process substitution to pass the output from <a href="x-man-page://1/sw_vers"><strong>sw_vers</strong></a> to the input for the <strong>read</strong> command:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt; &lt;<span class="o">(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> <span class="o">)</span>
+</code></pre></div></div>
 
 <p>When executed, <strong>read</strong> will use the separator to split the input line and assign each value one by one to each of the variable names defined.</p>
 
@@ -104,37 +97,34 @@
 
 <p>Consider this from the above example, but here I’ve defined <u>fewer</u> variable names than values:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> <span class="nt">-r</span> major minor &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> <span class="o">)</span>
 
 <span class="c"># Now the variables hold the following values:</span>
 <span class="o">(</span><span class="nv">major</span><span class="o">=</span>10<span class="o">)</span>
 <span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11.4<span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>If I define <u>more</u> variable names than there are values, <strong>read</strong> will just fill each variable until there are no more values to assign and then assign empty values to the remaining variables:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> -r major minor patch beta &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion <span class="o">)</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">IFS</span><span class="o">=</span><span class="s1">'.'</span> <span class="nb">read</span> <span class="nt">-r</span> major minor patch beta &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> <span class="o">)</span>
 
 <span class="c"># Now the variables hold the following values:</span>
 <span class="o">(</span><span class="nv">major</span><span class="o">=</span>10<span class="o">)</span>
 <span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11<span class="o">)</span>
 <span class="o">(</span><span class="nv">patch</span><span class="o">=</span>4<span class="o">)</span>
 <span class="o">(</span><span class="nv">beta</span><span class="o">=)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h1 id="only-assign-a-subset-of-values-from-the-line">Only assign a subset of values from the line</h1>
 
 <p>If you don’t want want the entire line assigned to variables you should parse the line before passing it to <strong>read</strong>. Then you can control what variables and values will be associated:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">read</span> -r minor patch &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers -productVersion | awk -F<span class="s1">'.'</span> <span class="s1">'{print $2"\ "$3}'</span> <span class="o">)</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">read</span> <span class="nt">-r</span> minor patch &lt; &lt;<span class="o">(</span> /usr/bin/sw_vers <span class="nt">-productVersion</span> | awk <span class="nt">-F</span><span class="s1">'.'</span> <span class="s1">'{print $2"\ "$3}'</span> <span class="o">)</span>
 
 <span class="c"># Now the variables hold the following values:</span>
 <span class="o">(</span><span class="nv">minor</span><span class="o">=</span>11<span class="o">)</span>
 <span class="o">(</span><span class="nv">patch</span><span class="o">=</span>4<span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h1 id="man-page">man page</h1>
 
@@ -142,9 +132,8 @@
 
 <p>You can use this command to jump to the <strong>read</strong> section in the <em>bash</em> man page:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>man bash | less -p <span class="s2">"^       read "</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>man bash | less <span class="nt">-p</span> <span class="s2">"^       read "</span>
+</code></pre></div></div>
 
 <p>Here are more links to Apple’s <em>bash</em> man page (search for “<strong>read [</strong>” to find the correct section.):</p>
 
@@ -164,29 +153,26 @@
   <li>
     <p><strong>sw_vers and awk each called three times:</strong></p>
 
-    <div class="highlighter-rouge"><pre class="highlight"><code>real	0m0.031s  
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	0m0.031s  
 user	0m0.016s  
  sys	0m0.016s
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
   <li>
     <p><strong>sw_vers output to variable and awk called three times:</strong></p>
 
-    <div class="highlighter-rouge"><pre class="highlight"><code>real	0m0.022s
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	0m0.022s
 user	0m0.009s
  sys	0m0.011s
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
   <li>
     <p><strong>read:</strong></p>
 
-    <div class="highlighter-rouge"><pre class="highlight"><code>real	0m0.014s
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	0m0.014s
 user	0m0.002s
  sys	0m0.003s
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
 </ul>
 

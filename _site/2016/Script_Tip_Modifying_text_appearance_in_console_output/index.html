@@ -47,8 +47,8 @@
 
 <p>There are many different terminal control languages. Browse the following directory to see all language files (<a href="x-man-page://5/terminfo"><em>terminfo</em></a>) recognized by your system:</p>
 
-<pre><code class="language-console">/usr/share/terminfo
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">/usr/share/terminfo
+</span></code></pre></div></div>
 
 <p>Because of the lack of standardization there was a need to create a tool that could translate what you intended the terminal to display to the correct escape code for the current terminal.</p>
 
@@ -70,7 +70,7 @@
 
 <p>This function is setting up the variables for the foreground color escape sequences I’ll need:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sgr_variables() {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sgr_variables() {
   # Foreground text colors
   red=$(tput setaf 1) # Red
   grn=$(tput setaf 2) # Green
@@ -80,16 +80,14 @@
   # Deactivate ALL sgr attributes and colors.
   clr=$(tput sgr0)
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>The variables can then be used inline with the text to be printed:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
 sgr_variables
 <span class="nb">printf</span> <span class="s2">"%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"</span><span class="k">${</span><span class="nv">red</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">grn</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">blu</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
-</code></pre>
-</div>
-<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_color.png" alt="sgr_color" /></p>
+</code></pre></div></div>
+<p><img src="http://localhost:4000/assets/screenshots/sgr_color.png" alt="sgr_color" /></p>
 
 <h1 id="color-background">Color (Background)</h1>
 
@@ -97,12 +95,11 @@ sgr_variables
 
 <p><em>I have updated the <strong>sgr_variables</strong> function to include the new variables from my <a href="https://github.com/erikberglund/Scripts/blob/master/functions/Bash/variables_sgr-escape-sequence/variables_sgr-escape-sequence.sh">referece</a>.</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
 sgr_variables
 <span class="nb">printf</span> <span class="s2">"%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"</span><span class="k">${</span><span class="nv">bgred</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">bgdef</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">bggrn</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">bgdef</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">bgblu</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
-</code></pre>
-</div>
-<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_bgcolor.png" alt="sgr_bgcolor" /></p>
+</code></pre></div></div>
+<p><img src="http://localhost:4000/assets/screenshots/sgr_bgcolor.png" alt="sgr_bgcolor" /></p>
 
 <h1 id="attributes">Attributes</h1>
 
@@ -130,52 +127,49 @@ Using the first example, but also adding some text attributes:</p>
 <p><br />
 <em>I have updated the <strong>sgr_variables</strong> function to include the new variables from my <a href="https://github.com/erikberglund/Scripts/blob/master/functions/Bash/variables_sgr-escape-sequence/variables_sgr-escape-sequence.sh">referece</a>.</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
 sgr_variables
 <span class="nb">printf</span> <span class="s2">"%s</span><span class="se">\n</span><span class="s2">"</span> <span class="se">\</span>
 <span class="s2">"</span><span class="k">${</span><span class="nv">red</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">grn</span><span class="k">}${</span><span class="nv">dim</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">nobld</span><span class="k">}${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">blu</span><span class="k">}${</span><span class="nv">uln</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
-</code></pre>
-</div>
-<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_attributes.png" alt="sgr_attributes" /></p>
+</code></pre></div></div>
+<p><img src="http://localhost:4000/assets/screenshots/sgr_attributes.png" alt="sgr_attributes" /></p>
 
 <h1 id="example-use-case">Example Use Case</h1>
 
 <p><strong>Colorized Status</strong><br />
 This is an example that will print three status messages in different colors:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">printf</span> <span class="s2">"%-15s</span><span class="se">\t</span><span class="s2">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"StatusOk:"</span>   <span class="s2">"[</span><span class="k">${</span><span class="nv">grn</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">OK</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">]"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">printf</span> <span class="s2">"%-15s</span><span class="se">\t</span><span class="s2">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"StatusOk:"</span>   <span class="s2">"[</span><span class="k">${</span><span class="nv">grn</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">OK</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">]"</span>
 <span class="nb">printf</span> <span class="s2">"%-15s</span><span class="se">\t</span><span class="s2">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"StatusWarn:"</span>   <span class="s2">"[</span><span class="k">${</span><span class="nv">yel</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">WARN</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">]"</span>
 <span class="nb">printf</span> <span class="s2">"%-15s</span><span class="se">\t</span><span class="s2">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="s2">"StatusError:"</span> <span class="s2">"[</span><span class="k">${</span><span class="nv">red</span><span class="k">}${</span><span class="nv">bld</span><span class="k">}</span><span class="s2">ERROR</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">]"</span>
-</code></pre>
-</div>
-<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_status.png" alt="sgr_status" /></p>
+</code></pre></div></div>
+<p><img src="http://localhost:4000/assets/screenshots/sgr_status.png" alt="sgr_status" /></p>
 
 <h1 id="final-notes">Final Notes</h1>
 
 <p>The escape sequence variables are not tied to <a href="x-man-page://1/printf"><strong>printf</strong></a>, they can just as easily be used with <a href="x-man-page://1/echo"><strong>echo</strong></a>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Call the function ONCE to set up the variables before using them.</span>
 sgr_variables
 <span class="nb">echo</span> <span class="s2">"</span><span class="k">${</span><span class="nv">red</span><span class="k">}</span><span class="s2">Red</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">grn</span><span class="k">}</span><span class="s2">Green</span><span class="k">${</span><span class="nv">def</span><span class="k">}</span><span class="s2">,</span><span class="k">${</span><span class="nv">blu</span><span class="k">}</span><span class="s2">Blue</span><span class="k">${</span><span class="nv">clr</span><span class="k">}</span><span class="s2">"</span>
-</code></pre>
-</div>
-<p><img src="http://erikberglund.github.io/assets/screenshots/sgr_color.png" alt="sgr_color" /></p>
+</code></pre></div></div>
+<p><img src="http://localhost:4000/assets/screenshots/sgr_color.png" alt="sgr_color" /></p>
 
 <p>To print your current terminal type, use this command:</p>
 
-<pre><code class="language-console">echo $TERM
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">echo $</span>TERM
+</code></pre></div></div>
 
 <p>To print your current terminal <a href="x-man-page://5/terminfo"><em>terminfo</em></a> file, use this command:</p>
 
-<pre><code class="language-console">infocmp -L -1
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">infocmp -L -1
+</span></code></pre></div></div>
 
 <hr />
 <div class="footnotes">
   <ol>
     <li id="fn:1">
-      <p>Section <strong>8.3.117</strong> of the <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">Standard ECMA-48 (Control Functions for Coded Character Sets)</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+      <p>Section <strong>8.3.117</strong> of the <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">Standard ECMA-48 (Control Functions for Coded Character Sets)</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
     </li>
   </ol>
 </div>

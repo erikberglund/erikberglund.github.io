@@ -11,7 +11,7 @@ kramdown:
 highlighter: rouge
 
 # Gems
-gems: [jekyll-paginate]
+plugins: [jekyll-paginate]
 
 paginate: 20
 baseurl: /

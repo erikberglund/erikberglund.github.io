@@ -61,8 +61,8 @@
 
 <p>This is the path to the JavaScript fronted source code folder:</p>
 
-<pre><code class="language-console">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/frontend/admin/common/app
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/frontend/admin/common/app
+</span></code></pre></div></div>
 
 <p>Within is a JavaScript file named <strong>javascript-packed.js</strong> and two CSS-files. The JavaScript file (as the name implies) is <em>packed</em> which is common for JavaScript code to save bandwidth. But this technique also obfuscates the file contents making it harder for humans to read.</p>
 
@@ -78,14 +78,12 @@
 
 <p><em>This example command only works on versions where the knobSetProperties list doesn’t contain a newline</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sed -nE -e <span class="s1">'s/.*knobSetProperties:\[([",a-zA-Z]+)\].*/\1/p'</span> javascript-packed.js
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sed <span class="nt">-nE</span> <span class="nt">-e</span> <span class="s1">'s/.*knobSetProperties:\[([",a-zA-Z]+)\].*/\1/p'</span> javascript-packed.js
+</code></pre></div></div>
 <p>Pass the <em>-l</em>/<em>–list</em> flag to my <a href="https://github.com/erikberglund/ProfileManagerKeyExtractor">profileManagerKeyExtractor.py</a> script for the same list:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>./profileManagerKeyExtractor.py -l
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./profileManagerKeyExtractor.py <span class="nt">-l</span>
+</code></pre></div></div>
 
 <p>With this list we can single out the relevant parts of the code that contain payload information for the selected KnobSet and parse it to get a structured output.</p>
 
@@ -95,9 +93,8 @@
 
 <p><em>Example that extracts the object name for the calDavKnobSets property:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sed -nE <span class="s1">'s/.*,Admin.([a-zA-Z]+KnobSet).*profilePropertyName[=:]"calDavKnobSets".*/\1/p'</span> javascript-packed.js
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sed <span class="nt">-nE</span> <span class="s1">'s/.*,Admin.([a-zA-Z]+KnobSet).*profilePropertyName[=:]"calDavKnobSets".*/\1/p'</span> javascript-packed.js
+</code></pre></div></div>
 
 <p>The payload keys available to a specific KnobSet is merged into the object using <strong>extend()</strong>.</p>
 
@@ -105,7 +102,7 @@
 
 <p><em>Excerpt from the extend method for the CalDavKnobSet:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nx">Admin</span><span class="p">.</span><span class="nx">CalDavKnobSet</span> <span class="o">=</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSet</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Admin</span><span class="p">.</span><span class="nx">CalDavKnobSet</span> <span class="o">=</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSet</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
         <span class="na">accountDescription</span><span class="p">:</span> <span class="nx">SC</span><span class="p">.</span><span class="nx">Record</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="nb">String</span><span class="p">,</span> <span class="p">{</span>
             <span class="na">key</span><span class="p">:</span> <span class="s2">"CalDAVAccountDescription"</span><span class="p">,</span>
             <span class="na">defaultValue</span><span class="p">:</span> <span class="s2">"_generic_string_My CalDAV Account"</span><span class="p">.</span><span class="nx">loc</span><span class="p">()</span>
@@ -121,14 +118,13 @@
             <span class="na">key</span><span class="p">:</span> <span class="s2">"CalDAVPrincipalURL"</span>
         <span class="p">}),</span>
         <span class="p">...</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The same is true for the <strong>KnobSetView</strong> object which holds key descriptions, available selections, hint strings, default values etc.</p>
 
 <p><em>Excerpt from the extend method for the CalDavKnobSetView:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nx">Admin</span><span class="p">.</span><span class="nx">CalDavKnobSetView</span> <span class="o">=</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSetView</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">Admin</span><span class="p">.</span><span class="nx">CalDavKnobSetView</span> <span class="o">=</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSetView</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
         <span class="na">contentView</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KnobSetContentView</span><span class="p">.</span><span class="nx">design</span><span class="p">({</span>
             <span class="na">layout</span><span class="p">:</span> <span class="p">{</span>
                 <span class="na">width</span><span class="p">:</span> <span class="nx">Admin</span><span class="p">.</span><span class="nx">KNOB_WIDTH</span><span class="p">,</span>
@@ -165,8 +161,7 @@
                 <span class="na">fieldPortContentValueKey</span><span class="p">:</span> <span class="s2">"portNumber"</span>
             <span class="p">}),</span>
             <span class="p">...</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>By knowing this, and by knowing the name of the KnobSet object we’re interested in it’s possible by using regular expression to extract the method content and subsequently parse that for the specific information we seek.</p>
 
@@ -176,31 +171,28 @@
 
 <p><em>Example from the CalDAV account description:</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="s2">"_generic_string_The display name of the account"</span>.loc<span class="o">()</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"_generic_string_The display name of the account"</span>.loc<span class="o">()</span>
+</code></pre></div></div>
 
 <p>As you can see, the string ends with the method .loc(). To get the string that’s presented to the user we need to use the string we got as a variable name and extract that variable’s value from the localization file.</p>
 
 <p>For English, the localization file can be found at the following path:</p>
 
-<pre><code class="language-console">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/frontend/admin/en.lproj/\
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/frontend/admin/en.lproj/\
 app/javascript_localizedStrings.js
-</code></pre>
+</span></code></pre></div></div>
 
 <p>Then we just get the value for the <strong>_generic_string_The display name of the account</strong> variable:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sed -nE <span class="s1">'s/"_generic_string_The display name of the account": (.*),$/\1/p'</span> javascript_localizedStrings.js
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sed <span class="nt">-nE</span> <span class="s1">'s/"_generic_string_The display name of the account": (.*),$/\1/p'</span> javascript_localizedStrings.js
 
 <span class="s2">"The display name of the account"</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Or, if we use the same extraction from the french localization file:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="s2">"Nom d’affichage du compte"</span>
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"Nom d’affichage du compte"</span>
+</code></pre></div></div>
 
 <h1 id="back-end">Back end</h1>
 
@@ -208,21 +200,20 @@ app/javascript_localizedStrings.js
 
 <p>This is the path to the source folder for the back end ruby models:</p>
 
-<pre><code class="language-console">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/backend/app/models
-</code></pre>
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">.../Server.app/Contents/ServerRoot/usr/share/devicemgr/backend/app/models
+</span></code></pre></div></div>
 
 <p>In this folder are all KnobSets separated into their own model files, so we can use the KnobSet object name to find the file containing a class that matches it and parse that file for info:</p>
 
 <p>Example content of the <strong>cal_dav_knob_set.rb</strong> file (the file matching object <em>CalDavKnobSet</em>):</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CalDavKnobSet</span> <span class="o">&lt;</span> <span class="no">KnobSet</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CalDavKnobSet</span> <span class="o">&lt;</span> <span class="no">KnobSet</span>
 
   <span class="vc">@@payload_type</span>          <span class="o">=</span> <span class="s2">"com.apple.caldav.account"</span>
   <span class="vc">@@payload_subidentifier</span> <span class="o">=</span> <span class="s2">"caldav"</span>
   <span class="vc">@@is_unique</span>             <span class="o">=</span> <span class="kp">false</span>
   <span class="vc">@@payload_name</span>          <span class="o">=</span> <span class="s2">"CalDAV"</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h1 id="putting-it-together">Putting it together</h1>
 
@@ -230,8 +221,8 @@ app/javascript_localizedStrings.js
 
 <p>This is the current output from my <a href="https://github.com/erikberglund/ProfileManagerKeyExtractor">script</a> if you request the information for the calDavKnobSet:</p>
 
-<pre><code class="language-console">$ ./profileManagerKeyExtractor.py -k calDavKnobSets
-
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span> ./profileManagerKeyExtractor.py <span class="nt">-k</span> calDavKnobSets
+<span class="go">
     Payload Name: CalDAV
     Payload Type: com.apple.caldav.account
           Unique: NO
@@ -281,7 +272,7 @@ app/javascript_localizedStrings.js
      Description: Enable Secure Socket Layer communication with CalDAV server
             Type: Boolean
     DefaultValue: YES
-</code></pre>
+</span></code></pre></div></div>
 
 <h1 id="final-notes">Final Notes</h1>
 
