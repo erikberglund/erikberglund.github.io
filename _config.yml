@@ -14,7 +14,7 @@ highlighter: rouge
 plugins: [jekyll-paginate]
 
 paginate: 20
-baseurl: /project
+baseurl: /
 domain_name: 'http://erikberglund.github.io'
 google_analytics: 'UA-75593310-1'
 disqus: false
