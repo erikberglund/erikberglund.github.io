@@ -7,16 +7,16 @@
     <atom:link href="http://erikberglund.github.io/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>ProfileCreator: Alpha</title>
+        <title>Configuration Profile Reference Changelog</title>
         
         
-          <description>&lt;p&gt;&lt;em&gt;This is not going to be a technical post. I will tell a short history of why I’m creating this application, where I’m currently at and where I’m heading.&lt;/em&gt;&lt;/p&gt;
+          <description>&lt;p&gt;Apple’s &lt;a href=&quot;https://developer.apple.com/library/content/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html&quot;&gt;Configuration Profile Reference&lt;/a&gt; is the only vendor documentation for the native configuration profile payload keys available. But the &lt;a href=&quot;https://developer.apple.com/library/content/featuredarticles/iPhoneConfigurationProfileRef/RevHist_Index/RevisionHistory.html&quot;&gt;revision history&lt;/a&gt; gives no information on what was added, updated or removed.&lt;/p&gt;
 
 </description>
         
-        <pubDate>Tue, 23 Aug 2016 22:00:00 +0200</pubDate>
-        <link>http://erikberglund.github.io/2016/ProfileCreator-Alpha/</link>
-        <guid isPermaLink="true">http://erikberglund.github.io/2016/ProfileCreator-Alpha/</guid>
+        <pubDate>Wed, 25 Apr 2018 22:00:00 +0200</pubDate>
+        <link>http://erikberglund.github.io/2018/Configuration_Profile_Reference_Changelog/</link>
+        <guid isPermaLink="true">http://erikberglund.github.io/2018/Configuration_Profile_Reference_Changelog/</guid>
       </item>
     
       <item>
