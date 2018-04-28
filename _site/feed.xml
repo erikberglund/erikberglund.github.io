@@ -7,6 +7,19 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Mobile Device Management Protocol Reference Changelog</title>
+        
+        
+          <description>&lt;p&gt;After my &lt;a href=&quot;http://erikberglund.github.io/2018/Configuration_Profile_Reference_Changelog/&quot;&gt;last post&lt;/a&gt; about my version control project of Apple’s &lt;a href=&quot;https://developer.apple.com/library/content/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html&quot;&gt;Configuration Profile Reference&lt;/a&gt; I got a request from a fellow Mac admin and namesake &lt;a href=&quot;https://blog.eriknicolasgomez.com&quot;&gt;Eric&lt;/a&gt; about doing the same scraping and version control for the &lt;a href=&quot;https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/MobileDeviceManagementProtocolRef&quot;&gt;Mobile Device Management Protocol Reference&lt;/a&gt;.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 28 Apr 2018 10:00:00 +0200</pubDate>
+        <link>http://localhost:4000/2018/MDM_Protocol_Reference_Changelog/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/MDM_Protocol_Reference_Changelog/</guid>
+      </item>
+    
+      <item>
         <title>Configuration Profile Reference Changelog</title>
         
         
