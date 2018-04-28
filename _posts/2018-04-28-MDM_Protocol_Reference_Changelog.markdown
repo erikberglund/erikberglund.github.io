@@ -16,6 +16,6 @@ Unfortunately there were not as many archived pages for this page as it was priv
 
 The [Mobile Device Management Protocol Reference](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/MobileDeviceManagementProtocolRef) page is not really meant for [#macadmins](https://twitter.com/hashtag/macadmins) as it's a reference for MDM developers. But I still wanted to put it here for anyone insterested in the world of MDM.
 
-Also, the script is currently only tested agains the [Mobile Device Management Protocol Reference](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/MobileDeviceManagementProtocolRef) page, so I would expect a few more tweaks are neccesseary until it's truly against Apples site design. But it's a good start.
+Also, the script is only tested against the [Mobile Device Management Protocol Reference](https://developer.apple.com/library/content/documentation/Miscellaneous/Reference/MobileDeviceManagementProtocolRef) page, so I would expect a few more tweaks to be neccesseary until it's truly generic against Apple's site design. But it's a good start.
 
 I will probably updated the Profile reference page using this new script in the future.
