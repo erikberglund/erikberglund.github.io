@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>erikberglund.github.io - Profile Creator (Beta 1)</title>
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="/rss.xml">
+  <link rel="stylesheet" href="/assets/css/highlight.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    
+        <a href="/"> <span class="arrow">←</span> Home </a>
+    
+
+    
+        
+            <a href="/about">About </a>
+        
+    
+    <a class="cta" href="/feed.xml">Subscribe</a>
+</nav>
+
+  
+
+  <section id="wrapper" class="">
+    <article class="post">
+    <header>
+        <h1>Profile Creator (Beta 1)</h1>
+        <h2 class="headline">June 28, 2018</h2>
+    </header>
+    <section id="post-body">
+        <p>In 2015 I started a project to make it easier to create configuration profiles. The current solutions were (and still are) poor and missing a lot of basic features.</p>
+
+<p>I made a POC that did exactly what I needed and continued to write the app in Objective-C. Unfortunately, personal reasons caused me to drop everything until January this year when I picked up where I left off. In my time away, Swift had risen a lot among Apple developers, so to make this application better suited for the future (and open the door to more admins who wanted to contribute) I decided to rewrite the application in Swift.</p>
+
+<p>Now the application is ready for a first Beta.</p>
+
+<p>Download it here: <a href="https://github.com/erikberglund/ProfileCreator/releases">Profile Creator Releases</a></p>
+
+<h1 id="features">Features</h1>
+
+<p>The primary goal of the beta is testing stability and the core of the application: creating, editing and exporting profiles.</p>
+
+<p>In this version, you can only add keys and payloads from the pre-defined payload manifests. I’ve included most macOS payloads, two preference domains and three well-known Open Source applications whose preferences are preferred to be delivered as profiles:</p>
+
+<ul>
+  <li>Munki</li>
+  <li>NoMad</li>
+  <li>NoMad Login</li>
+</ul>
+
+<p>On export, you can sign your profile with a signing certificate from the login keychain.</p>
+
+<h1 id="planned-features">Planned Features</h1>
+
+<p>There are many features I would like to add, here is a small subset in no particular order:</p>
+
+<ul>
+  <li>Import existing profiles</li>
+  <li>Show configuration errors</li>
+  <li>Merge/Split profiles</li>
+  <li>Custom payloads</li>
+  <li>Custom keys in any payload</li>
+  <li>Read preferences on disk and save as profile (like <a href="https://github.com/timsutton/mcxToProfile">mcxToProfile</a> but with a GUI).</li>
+  <li>Allow a custom path for the main window groups (where the profile setting files are saved).</li>
+  <li>Read/Update/Add/Sync profiles to an MDM using their APIs.</li>
+</ul>
+
+<h1 id="feedback">Feedback</h1>
+
+<p>If you decide to try the application and have feedback (it can be anything from language, the user interface to code). Please open an issue on the project GitHub: <a href="https://github.com/erikberglund/ProfileCreator/issues">Profile Creator Issues</a>.</p>
+
+<p>You can also join the <a href="https://macadmins.slack.com/messages/C2N7MED7G">#profilecreator</a> channel on the <a href="https://macadmins.herokuapp.com">MacAdmins Slack</a> to ask questions or discuss a feature.</p>
+
+
+    </section>
+</article>
+<footer id="post-meta" class="clearfix">
+    <a href="http://twitter.com/ekkrik">
+        <img class="avatar" src="/assets/images/avatar.png">
+        <div>
+            <span class="dark">Erik Berglund</span>
+            <span>Adventures in Code</span>
+        </div>
+    </a>
+
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://erikberglund.github.io/2018/Profile_Creator_Beta_1/ - Profile Creator (Beta 1) by @ekkrik"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+    </section>
+</footer>
+
+<!-- Disqus comments -->
+
+
+<!-- Archive post list -->
+
+
+
+
+
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75593310-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
+
+
+
