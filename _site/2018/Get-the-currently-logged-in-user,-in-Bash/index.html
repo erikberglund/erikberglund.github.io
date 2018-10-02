@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>erikberglund.github.io - Script Tip: Get the currently logged in user, in Bash</title>
+  <link rel="shortcut icon" href="/assets/images/favicon.ico">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="/rss.xml">
+  <link rel="stylesheet" href="/assets/css/highlight.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    
+        <a href="/"> <span class="arrow">←</span> Home </a>
+    
+
+    
+        
+            <a href="/about">About </a>
+        
+    
+    <a class="cta" href="/feed.xml">Subscribe</a>
+</nav>
+
+  
+
+  <section id="wrapper" class="">
+    <article class="post">
+    <header>
+        <h1>Script Tip: Get the currently logged in user, in Bash</h1>
+        <h2 class="headline">October 2, 2018</h2>
+    </header>
+    <section id="post-body">
+        <p>Recently one of my postinstall scripts failed for a tiny subset of our users. It turned out to be the Python binary in their <strong>PATH</strong> that did not have the Python Objective-C bridge, so the function I used to get the currently logged in user failed.</p>
+
+<p>That python snippet was written by the excellent <a href="http://michaellynn.github.io/about/">Michael Lynn</a> and spread far and wide by the equally excellent <a href="https://macmule.com/about/">Ben Toms</a> in his infamous post:</p>
+
+<p><a href="https://macmule.com/2014/11/19/how-to-get-the-currently-logged-in-user-in-a-more-apple-approved-way/">How To: Get the currently logged in user, in a more Apple approved way</a>.</p>
+
+<p>I fixed my postinstall with a hardcoded path to the system Python, but I began to wonder:</p>
+
+<p><em>Do I have to use Python to get this information reliably?</em></p>
+
+<h1 id="systemconfiguration-framework">SystemConfiguration framework</h1>
+
+<p>The Python snippet is following the example in a Q&amp;A article from Apple about getting the current console user: <a href="https://developer.apple.com/library/archive/qa/qa1133/_index.html">Q&amp;A1133: Determining console user login status</a>.</p>
+
+<p>It’s calling the function: <a href="https://developer.apple.com/documentation/systemconfiguration/1517123-scdynamicstorecopyconsoleuser">SCDynamicStoreCopyConsoleUser</a> from the <a href="https://developer.apple.com/documentation/systemconfiguration">SystemConfiguration framework</a> to read from the dynamic store maintained by <a href="x-man-page://8/configd">configd</a> which contains data reflecting the current state of the system.</p>
+
+<p>Since there are no Objective-C bridges to Bash we cannot use the APIs directly, but we already have a tool that uses these APIs to access the system configuration database.</p>
+
+<h1 id="scutil">scutil</h1>
+
+<p>The binary <strong>/usr/sbin/scutil</strong> has a limited set of command line options, but from it’s <a href="(x-man-page://8/scutil)">man</a> page:</p>
+
+<pre><code class="language-string">Invoked with no options, scutil provides a command line interface to the
+"dynamic store" data maintained by configd(8). 
+
+Interaction with this data (using the SystemConfiguration.framework SCDynamicStore APIs) is handled with a set of commands read from standard input.
+</code></pre>
+
+<p>First, we list the available keys in the data store by passing the interactive command <strong>list</strong>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scutil <span class="o">&lt;&lt;&lt;</span> <span class="s2">"list"</span>
+</code></pre></div></div>
+
+<p>(The command above is using a <a href="https://www.tldp.org/LDP/abs/html/x17837.html">here string</a> (<strong>&lt;&lt;&lt;</strong>) to pass a string to stdin)</p>
+
+<p>This prints a list of the available keys. subKey 100 seems to be what we are looking for:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>subKey <span class="o">[</span>0] <span class="o">=</span> Plugin:IPConfiguration
+subKey <span class="o">[</span>1] <span class="o">=</span> Plugin:InterfaceNamer
+subKey <span class="o">[</span>2] <span class="o">=</span> Plugin:KernelEventMonitor
+subKey <span class="o">[</span>3] <span class="o">=</span> Setup:
+subKey <span class="o">[</span>4] <span class="o">=</span> Setup:/
+subKey <span class="o">[</span>5] <span class="o">=</span> Setup:/Network/BackToMyMac
+subKey <span class="o">[</span>6] <span class="o">=</span> Setup:/Network/BackToMyMacDSIDs
+...
+subKey <span class="o">[</span>100] <span class="o">=</span> State:/Users/ConsoleUser
+...
+</code></pre></div></div>
+
+<p>Now we run the interactive command <strong>show key [“pattern”]</strong> with our key:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scutil <span class="o">&lt;&lt;&lt;</span> <span class="s2">"show State:/Users/ConsoleUser"</span>
+</code></pre></div></div>
+
+<p>And we get what we came for:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;dictionary&gt; <span class="o">{</span>
+  GID : 20
+  Name : erikberglund
+  SessionInfo : &lt;array&gt; <span class="o">{</span>
+    0 : &lt;dictionary&gt; <span class="o">{</span>
+      kCGSSessionAuditIDKey : 100008
+      kCGSSessionGroupIDKey : 20
+      kCGSSessionIDKey : 257
+      kCGSSessionLoginwindowSafeLogin : FALSE
+      kCGSSessionOnConsoleKey : TRUE
+      kCGSSessionOrderingKey : 0
+      kCGSSessionSystemSafeBoot : FALSE
+      kCGSSessionUserIDKey : 501
+      kCGSSessionUserNameKey : erikberglund
+      kCGSessionLoginDoneKey : TRUE
+      kCGSessionLongUserNameKey : Erik Berglund
+      kSCSecuritySessionID : 100008
+    <span class="o">}</span>
+  <span class="o">}</span>
+  UID : 501
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>This prints three key/value pairs for the current console user:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GID : 20
+Name : erikberglund
+UID : 501
+</code></pre></div></div>
+
+<p>And an array of all current GUI sessions:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SessionInfo : &lt;array&gt; {
+    0 : &lt;dictionary&gt; {
+      kCGSSessionAuditIDKey : 100008
+      kCGSSessionGroupIDKey : 20
+      kCGSSessionIDKey : 257
+      kCGSSessionLoginwindowSafeLogin : FALSE
+      kCGSSessionOnConsoleKey : TRUE
+      kCGSSessionOrderingKey : 0
+      kCGSSessionSystemSafeBoot : FALSE
+      kCGSSessionUserIDKey : 501
+      kCGSSessionUserNameKey : erikberglund
+      kCGSessionLoginDoneKey : TRUE
+      kCGSessionLongUserNameKey : Erik Berglund
+      kSCSecuritySessionID : 100008
+    }
+  }
+</code></pre></div></div>
+
+<p>With this, we can create a simple Bash snippet to get the currently logged in user in an Apple approved way without shelling out to Python in our Bash scripts.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">loggedInUser</span><span class="o">=</span><span class="k">$(</span> scutil <span class="o">&lt;&lt;&lt;</span> <span class="s2">"show State:/Users/ConsoleUser"</span> | awk <span class="nt">-F</span><span class="s1">': '</span> <span class="s1">'/[[:space:]]+Name[[:space:]]:/ { if ( $2 != "loginwindow" ) { print $2 }}'</span> <span class="k">)</span>
+</code></pre></div></div>
+
+<p>(And it’s quite a lot faster)</p>
+
+<h1 id="trust-but-verify">Trust, but verify</h1>
+
+<p>We need to verify that this command will provide the same result as the Python snippet.</p>
+
+<p>And since Apple was kind enough to provide the source for <strong>scutil</strong> and <strong>configd</strong> on <a href="https://opensource.apple.com/source/configd/configd-963.30.1/">opensource.apple.com</a> it was easy to do.</p>
+
+<p>There, we find the command “show” will run an internal function called <strong>do_show</strong>:</p>
+
+<p><a href="https://opensource.apple.com/source/configd/configd-963.30.1/scutil.tproj/commands.c.auto.html">commands.c</a></p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* cmd    minArgs maxArgs func     group ctype usage*/</span>
+<span class="p">...</span>
+<span class="p">{</span> <span class="s">"show"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>      <span class="mi">2</span><span class="p">,</span>      <span class="n">do_show</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>    <span class="mi">0</span><span class="p">,</span>    <span class="s">" show key [</span><span class="se">\"</span><span class="s">pattern</span><span class="se">\"</span><span class="s">]..."</span> <span class="p">}</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p><strong>do_show</strong> calls <a href="https://developer.apple.com/documentation/systemconfiguration/1437812-scdynamicstorecopyvalue?language=objc">SCDynamicStoreCopyValue</a> with our key <strong>“State:/Users/ConsoleUser”</strong>:</p>
+
+<p><a href="https://opensource.apple.com/source/configd/configd-963.30.1/scutil.tproj/cache.c.auto.html">cache.c</a></p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span>
+<span class="nf">do_show</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="p">...</span>
+    <span class="n">newValue</span> <span class="o">=</span> <span class="n">SCDynamicStoreCopyValue</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="n">SCPrint</span><span class="p">(</span><span class="n">TRUE</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">CFSTR</span><span class="p">(</span><span class="s">"%@</span><span class="se">\n</span><span class="s">"</span><span class="p">),</span> <span class="n">newValue</span><span class="p">);</span>
+    <span class="n">CFRelease</span><span class="p">(</span><span class="n">newValue</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>But <strong>SCDynamicStoreCopyValue</strong> != <strong>SCDynamicStoreCopyConsoleUser</strong>.</p>
+
+<p>So let’s look at the <strong>SCDynamicStoreCopyConsoleUser</strong> function:</p>
+
+<p><a href="https://opensource.apple.com/source/configd/configd-963.30.1/SystemConfiguration.fproj/SCDConsoleUser.c.auto.html">SCDConsoleUser.c</a></p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">CFStringRef</span>
+<span class="nf">SCDynamicStoreCopyConsoleUser</span><span class="p">(</span><span class="n">SCDynamicStoreRef</span> <span class="n">store</span><span class="p">,</span> <span class="n">uid_t</span> <span class="o">*</span><span class="n">uid</span><span class="p">,</span> <span class="n">gid_t</span> <span class="o">*</span><span class="n">gid</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">CFStringRef</span>        <span class="n">consoleUser</span>    <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">CFDictionaryRef</span>        <span class="n">dict</span>        <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">CFStringRef</span>        <span class="n">key</span><span class="p">;</span>
+
+    <span class="n">key</span>  <span class="o">=</span> <span class="n">SCDynamicStoreKeyCreateConsoleUser</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">dict</span> <span class="o">=</span> <span class="n">SCDynamicStoreCopyValue</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="n">consoleUser</span> <span class="o">=</span> <span class="n">CFDictionaryGetValue</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span> <span class="n">kSCPropUsersConsoleUserName</span><span class="p">);</span>
+    <span class="p">...</span>
+    <span class="k">return</span> <span class="n">consoleUser</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>There we can se it’s also calling <strong>SCDynamicStoreCopyValue</strong> to get the value, using the key returned from <strong>SCDynamicStoreKeyCreateConsoleUser(NULL)</strong>.</p>
+
+<p>And running that command returns the same key as we use in <strong>scutil</strong>:</p>
+
+<div class="language-objc highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">NSLog</span><span class="p">(</span><span class="s">@"%@"</span><span class="p">,</span> <span class="n">SCDynamicStoreKeyCreateConsoleUser</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+<span class="n">State</span><span class="o">:/</span><span class="n">Users</span><span class="o">/</span><span class="n">ConsoleUser</span>
+</code></pre></div></div>
+
+<p>This verifies that the <strong>scutil</strong> command uses the exact same API-call to get the console user.</p>
+
+<h1 id="where-does-the-value-come-from">Where does the value come from?</h1>
+
+<p>After looking at this, I got curious about where the SystemConfiguration got its data.</p>
+
+<p>That finally brought me to <strong>loginwindow.app</strong>.</p>
+
+<p>In the initialization of the Login1 class, it’s setting up callbacks for CoreGraphics notifications.</p>
+
+<p>(All code snippets below are <a href="https://www.hopperapp.com">Hopper</a> pseudo-code)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/* @class Login1 */
+-(void *)init {
+    var_50 = self;
+    rcx = *0x100117e48;
+    *(&amp;var_50 + 0x8) = rcx;
+    rax = [[&amp;var_50 super] init];
+    r12 = rax;
+    ...
+    CGSRegisterNotifyProc(sub_100032528, 0x5dc, r12);
+    ...
+</code></pre></div></div>
+
+<p>With <strong>CGSRegisterNotifyProc</strong> it registers the function <strong>sub_100032528</strong> to be called whenever a notification for the <strong>CGSEventType:</strong> <strong>0x5dc</strong> is recieved.</p>
+
+<p><strong>0x5dc</strong> is hexadecimal for 1500 and it’s defined as:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kCGSessionConsoleConnect = 1500
+</code></pre></div></div>
+
+<p>So whenever this notification is posted, <strong>sub_100032528</strong> will be run:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int sub_100032528(int arg0, int arg1, int arg2, int arg3) {
+  rcx = arg3;
+  r14 = rcx;
+  syslog$DARWIN_EXTSN(0x3, "Session ON console", arg2, rcx);
+  ...
+  [[LoginDServer sharedLoginDServer] setSessionHasConsoleAccessFlag:0x1];
+  if ([*qword_10011a9f0 loggedIn] == 0x1) {
+    if (sub_1000416a1() == 0x1) {
+      r15 = CGSSessionCopyAllSessionProperties();
+        if (r15 != 0x0) {
+          [[LoginDServer sharedLoginDServer] setSCDynamicStoreConsoleInformation:[r14 shortName] uid:[r14 userID] gid:[r14 groupID] sessionList:r15];
+          ...
+</code></pre></div></div>
+
+<p>It checks that the user is logged in, then calls <strong>setSCDynamicStoreConsoleInformation</strong>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">setSCDynamicStoreConsoleInformation:uid:gid:sessionList:</span>
+</code></pre></div></div>
+
+<p>Which in turn calls <strong>SCDynamicStoreSetConsoleInformation</strong> to update the SystemConfiguration dynamic store with the current user information.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">SCDynamicStoreSetConsoleUser</span> <span class="p">(</span>    <span class="n">SCDynamicStoreRef</span> <span class="n">store</span><span class="p">,</span> 
+                <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">user</span><span class="p">,</span> 
+                <span class="n">uid_t</span> <span class="n">uid</span><span class="p">,</span> 
+                <span class="n">gid_t</span> <span class="n">gid</span> <span class="p">);</span>
+</code></pre></div></div>
+
+<p>We could go on here diving into CoreGraphics and the <strong>SkyLight.framework</strong> that handles the GUI sessions and the WindowServer. But I will stop here not to miss the point of this post.</p>
+
+<h1 id="another-bash-method">Another Bash Method</h1>
+
+<p>There is another dynamic store we can read to get the console user in Bash: <a href="https://developer.apple.com/library/archive/documentation/DeviceDrivers/Conceptual/IOKitFundamentals/TheRegistry/TheRegistry.html">The I/O Registry</a>.</p>
+
+<p>From the description, it doesn’t seem to hold user information, but in the global <strong>IORegistryEntry</strong> root object there is a key called <strong>IOConsoleUsers</strong> that holds the actual array shown in the <code class="highlighter-rouge">SessionInfo</code> key from the <strong>scutil</strong> command.</p>
+
+<p>That means that we can use <strong>/usr/sbin/ioreg</strong> to read the registry and find the dictionary with key <strong>kCGSSessionOnConsoleKey</strong> set to <strong>TRUE</strong> and print that username:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">loggedInUser</span><span class="o">=</span><span class="k">$(</span> ioreg <span class="nt">-n</span> Root <span class="nt">-d1</span> <span class="nt">-a</span> | xpath <span class="s1">'/plist/dict/key[.="IOConsoleUsers"]/following-sibling::array/dict/key[.="kCGSSessionOnConsoleKey"]/following-sibling::*[1][name()="true"]/../key[.="kCGSSessionUserNameKey"]/following-sibling::string[1]/text()'</span> 2&gt;/dev/null <span class="k">)</span>
+</code></pre></div></div>
+
+<p>This information should be as valid as the one using the <strong>scutil</strong> method as it’s the CoreGraphics framework <strong>SkyLight</strong> that writes this information before notifying the login window.</p>
+
+<h1 id="get-the-current-console-user-in-bash">Get the current console user in Bash</h1>
+
+<p>Here is the bash snippet again to get the current console user in Bash:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">loggedInUser</span><span class="o">=</span><span class="k">$(</span> scutil <span class="o">&lt;&lt;&lt;</span> <span class="s2">"show State:/Users/ConsoleUser"</span> | awk <span class="nt">-F</span><span class="s1">': '</span> <span class="s1">'/[[:space:]]+Name[[:space:]]:/ { if ( $2 != "loginwindow" ) { print $2 }}'</span> <span class="k">)</span>
+</code></pre></div></div>
+
+    </section>
+</article>
+<footer id="post-meta" class="clearfix">
+    <a href="http://twitter.com/ekkrik">
+        <img class="avatar" src="/assets/images/avatar.png">
+        <div>
+            <span class="dark">Erik Berglund</span>
+            <span>Adventures in Code</span>
+        </div>
+    </a>
+
+    <section id="sharing">
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://erikberglund.github.io/2018/Get-the-currently-logged-in-user,-in-Bash/ - Script Tip: Get the currently logged in user, in Bash by @ekkrik"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+    </section>
+</footer>
+
+<!-- Disqus comments -->
+
+
+<!-- Archive post list -->
+
+
+
+
+
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-75593310-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</body>
+</html>
+
+
+
