@@ -120,8 +120,10 @@ SessionInfo : <array> {
 
 With this, we can create a simple Bash snippet to get the currently logged in user in an Apple approved way without shelling out to Python in our Bash scripts.
 
+**EDIT: Since I posted this, user @tulgeywood on the MacAdmins Slack made a more concise version of the awk part of the command which I have updated this post to also use.**
+
 ```bash
-loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk -F': ' '/[[:space:]]+Name[[:space:]]:/ { if ( $2 != "loginwindow" ) { print $2 }}' )
+loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
 ```
 
 (And it's quite a lot faster)
@@ -273,6 +275,14 @@ This information should be as valid as the one using the **scutil** method as it
 # Get the current console user in Bash
 
 Here is the bash snippet again to get the current console user in Bash:
+
+**EDIT: Since I posted this, user @tulgeywood on the MacAdmins Slack made a more concise version of the awk part of the command which I have updated this post to also use.**
+
+```bash
+loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
+```
+
+And below is my original command. Both return the exact same information but the command above is just a bit shorter and easier to read, so use that.
 
 ```bash
 loggedInUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk -F': ' '/[[:space:]]+Name[[:space:]]:/ { if ( $2 != "loginwindow" ) { print $2 }}' )
