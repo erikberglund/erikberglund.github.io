@@ -46,7 +46,7 @@ The hope for this application from the beginning was to actually create a proof 
 
 Now I heard that Jamfs profile rewrite is finally coming along. I have not seen it, but my hopes are that their changes will be what the community needs, and that this will spark the other vendors to also improve their UIs.
 
-Thank you all for this time, it has been great. But now I have to move on to try and find other things to do that can make help me and my family.
+Thank you all for this time, it has been great. But now I have to move on to try and find other things to do that can help me and my family.
 
 Good Bye 
 
