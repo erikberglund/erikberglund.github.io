@@ -39,6 +39,7 @@ There is such a long list of features I wanted to get in, and so many internal c
 - Rewrite the save structure. Currently the "isSelected" state for a single key is stored along with the settings. If that was broken out to a separate array, and the settings would be just like a finished profile, everything would be so much better in the app.
 - Create a new UI for editing deeply nested keys.
 
+    
 ## Finally
 
 The hope for this application from the beginning was to actually create a proof of concept to show MDM vendors that MacAdmins really need much better granularity when creating profiles. And my goal has not been this app itself, the app was just a way to get by when the existing tools did such a poor job to help an admin do the work they needed. I felt like the developers of the tools did not have a grip with what the users of their MDM actually needed so I wanted to make this to fix things for myself, but also to show that there is at least one other way to solve this.
